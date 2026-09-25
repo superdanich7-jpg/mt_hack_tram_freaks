@@ -21,7 +21,12 @@ import pandas as pd
 
 from src import config as cfg
 from src.data import load_and_prepare
-from src.features import CATEGORICAL_FEATURES, get_feature_columns, make_features
+from src.features import (
+    CATEGORICAL_FEATURES,
+    get_feature_columns,
+    make_features,
+    weather_available,
+)
 from src.metrics import compute_metrics, round_predictions
 
 # LightGBM 4.7 ругается на аргумент eval_set (deprecated) — предупреждение не по делу
@@ -38,6 +43,13 @@ def build_datasets(
     recent_weeks: int = cfg.RECENT_WEEKS,
 ):
     """Готовит train/valid матрицы признаков без утечки из будущего."""
+    if use_weather and not weather_available():
+        logger.warning(
+            "Кэш погоды data/external/weather.csv не найден — обучение без погодных "
+            "признаков. Запусти `python -m src.external.weather`, чтобы их вернуть."
+        )
+        use_weather = False
+
     df = load_and_prepare()
     feats = make_features(
         df, cutoff=valid_start, use_weather=use_weather, recent_weeks=recent_weeks

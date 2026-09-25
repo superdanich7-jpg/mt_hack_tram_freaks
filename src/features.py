@@ -69,9 +69,20 @@ CATEGORICAL_FEATURES: list[str] = ["route", "dow", "hour"]
 
 def load_weather(path: str | Path = WEATHER_CSV_PATH) -> pd.DataFrame:
     """Загрузка кэшированных погодных данных."""
+    path = Path(path)
+    if not path.exists():
+        raise FileNotFoundError(
+            f"Нет файла {path}. Сначала выполни `python -m src.external.weather` "
+            "или запусти пайплайн без погодных признаков (--no-weather)."
+        )
     df = pd.read_csv(path)
     df["date"] = pd.to_datetime(df["date"])
     return df
+
+
+def weather_available(path: str | Path = WEATHER_CSV_PATH) -> bool:
+    """Есть ли локальный кэш погоды (файл в .gitignore)."""
+    return Path(path).exists()
 
 
 def load_holidays(path: str | Path = HOLIDAYS_CSV_PATH) -> pd.DataFrame:

@@ -14,7 +14,13 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from src import config as cfg  # noqa: E402
-from src.features import get_feature_columns, make_features  # noqa: E402
+from src.features import (  # noqa: E402
+    get_feature_columns,
+    load_holidays,
+    load_weather,
+    make_features,
+    weather_available,
+)
 from src.metrics import compute_metrics, round_predictions  # noqa: E402
 
 
@@ -87,3 +93,24 @@ def test_round_predictions_clips_and_rounds() -> None:
     out = round_predictions([-5.4, 0.4, 10.5, 2.5])
     assert out.tolist() == [0, 0, 10, 2]
     assert np.issubdtype(out.dtype, np.integer)
+
+
+def test_weather_available_reflects_file() -> None:
+    """weather_available() сообщает о наличии локального кэша погоды."""
+    assert weather_available() == Path(cfg.WEATHER_CSV_PATH).exists()
+
+
+def test_load_weather_error_is_actionable() -> None:
+    """Отсутствие кэша погоды даёт понятную инструкцию, а не стектрейс pandas."""
+    with pytest.raises(FileNotFoundError, match="src.external.weather"):
+        load_weather("data/external/__nonexistent_weather.csv")
+
+
+def test_holidays_cover_forecast_period() -> None:
+    """Календарь праздников покрывает ноябрь–декабрь 2025."""
+    hol = load_holidays()
+    dates = set(pd.to_datetime(hol["date"]))
+    for day in ("2025-11-03", "2025-11-04", "2025-12-31", "2025-11-01"):
+        assert pd.Timestamp(day) in dates
+    nov4 = hol.loc[pd.to_datetime(hol["date"]) == pd.Timestamp("2025-11-04")]
+    assert int(nov4["is_official_holiday"].iloc[0]) == 1

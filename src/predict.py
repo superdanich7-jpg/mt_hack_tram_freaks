@@ -22,7 +22,12 @@ import pandas as pd
 
 from src import config as cfg
 from src.data import load_and_prepare
-from src.features import CATEGORICAL_FEATURES, get_feature_columns, make_features
+from src.features import (
+    CATEGORICAL_FEATURES,
+    get_feature_columns,
+    make_features,
+    weather_available,
+)
 from src.metrics import round_predictions
 from src.train import run_training
 
@@ -76,6 +81,13 @@ def train_final_model(
     rounds: int | None = None,
 ):
     """Обучение финальной модели на всей доступной истории + признаки для прогноза."""
+    if use_weather and not weather_available():
+        logger.warning(
+            "Кэш погоды data/external/weather.csv не найден — прогноз без погодных "
+            "признаков. Запусти `python -m src.external.weather`, чтобы их вернуть."
+        )
+        use_weather = False
+
     history = load_and_prepare()
     grid = build_forecast_grid()
 
