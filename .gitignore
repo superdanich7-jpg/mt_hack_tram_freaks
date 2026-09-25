@@ -1,0 +1,32 @@
+﻿# Данные (огромные)
+train.csv
+test.csv
+data/raw/
+data/processed/
+data/external/
+*.parquet
+
+# QA-записи (тяжёлые)
+qa.mp4
+QA_audio.mp3
+*.mp4
+*.mp3
+
+# Модели
+models/*.bin
+models/*.txt
+models/*.pkl
+*.lgb
+*.cbm
+
+# Среда
+.venv/
+venv/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+.env
+.DS_Store
+
+# Логи
+logs/

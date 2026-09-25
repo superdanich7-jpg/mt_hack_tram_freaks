@@ -1,0 +1,3128 @@
+{
+ "name": "ИИ-прогноз загрузки трамваев | Чат капитанов",
+ "type": "private_supergroup",
+ "id": 4381898268,
+ "messages": [
+  {
+   "id": 1,
+   "type": "service",
+   "date": "2026-09-17T17:28:16",
+   "date_unixtime": "1789655296",
+   "actor": "ИИ-прогноз загрузки трамваев | Чат капитанов",
+   "actor_id": "channel4381898268",
+   "action": "migrate_from_group",
+   "title": "ИИ-прогноз загрузки трамваев | Чат капитанов",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 2,
+   "type": "service",
+   "date": "2026-09-23T12:37:30",
+   "date_unixtime": "1790156250",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "invite_members",
+   "members": [
+    "Anatoly"
+   ],
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 3,
+   "type": "message",
+   "date": "2026-09-23T15:30:35",
+   "date_unixtime": "1790166635",
+   "edited": "2026-09-23T17:27:05",
+   "edited_unixtime": "1790173625",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    "👋 ",
+    {
+     "type": "bold",
+     "text": "Капитаны, привет!"
+    },
+    "\n\nДобро пожаловать в чат капитанов трека «ИИ-прогноз загрузки трамвайных маршрутов».\n\n🚀 Здесь вы можете задавать вопросы по задаче и организации хакатона.\n\n📌 В этом чате будет публиковаться актуальная и важная информация для ваших команд. ",
+    {
+     "type": "bold",
+     "text": "Капитан должен передавать все это своей команде!"
+    },
+    "\n\nПознакомим вас с модераторами трека, именно они будут отвечать на ваши вопросы и высылать всю информацию.\n\n",
+    {
+     "type": "mention",
+     "text": "@yamasshaa"
+    },
+    " — Маша\n",
+    {
+     "type": "mention",
+     "text": "@sergeenkokirill"
+    },
+    " — Кирилл\n\n❗️ При возникновении вопросов личного характера вы можете написать в аккаунт поддержки: ",
+    {
+     "type": "mention",
+     "text": "@mt_hackathon_support"
+    },
+    "\n\nЖелаем успехов!"
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "👋 "
+    },
+    {
+     "type": "bold",
+     "text": "Капитаны, привет!"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nДобро пожаловать в чат капитанов трека «ИИ-прогноз загрузки трамвайных маршрутов».\n\n🚀 Здесь вы можете задавать вопросы по задаче и организации хакатона.\n\n📌 В этом чате будет публиковаться актуальная и важная информация для ваших команд. "
+    },
+    {
+     "type": "bold",
+     "text": "Капитан должен передавать все это своей команде!"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nПознакомим вас с модераторами трека, именно они будут отвечать на ваши вопросы и высылать всю информацию.\n\n"
+    },
+    {
+     "type": "mention",
+     "text": "@yamasshaa"
+    },
+    {
+     "type": "plain",
+     "text": " — Маша\n"
+    },
+    {
+     "type": "mention",
+     "text": "@sergeenkokirill"
+    },
+    {
+     "type": "plain",
+     "text": " — Кирилл\n\n❗️ При возникновении вопросов личного характера вы можете написать в аккаунт поддержки: "
+    },
+    {
+     "type": "mention",
+     "text": "@mt_hackathon_support"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nЖелаем успехов!"
+    }
+   ]
+  },
+  {
+   "id": 4,
+   "type": "service",
+   "date": "2026-09-23T15:30:39",
+   "date_unixtime": "1790166639",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "pin_message",
+   "message_id": 3,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 5,
+   "type": "service",
+   "date": "2026-09-23T17:23:11",
+   "date_unixtime": "1790173391",
+   "actor": "Kirill Sergeenko",
+   "actor_id": "user151522593",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 6,
+   "type": "service",
+   "date": "2026-09-23T17:30:02",
+   "date_unixtime": "1790173802",
+   "actor": "Masha",
+   "actor_id": "user1116481734",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 7,
+   "type": "service",
+   "date": "2026-09-23T17:43:21",
+   "date_unixtime": "1790174601",
+   "actor": "Ариша Николаева",
+   "actor_id": "user1454163792",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 8,
+   "type": "service",
+   "date": "2026-09-23T17:47:57",
+   "date_unixtime": "1790174877",
+   "actor": "катя",
+   "actor_id": "user1053906810",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 9,
+   "type": "service",
+   "date": "2026-09-23T17:53:10",
+   "date_unixtime": "1790175190",
+   "actor": "Дарья",
+   "actor_id": "user977683571",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 10,
+   "type": "service",
+   "date": "2026-09-23T17:54:20",
+   "date_unixtime": "1790175260",
+   "actor": "Даниил (nes)",
+   "actor_id": "user135821388",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 11,
+   "type": "service",
+   "date": "2026-09-23T17:59:34",
+   "date_unixtime": "1790175574",
+   "actor": "NKolesnikov ☻",
+   "actor_id": "user131378505",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 12,
+   "type": "service",
+   "date": "2026-09-23T18:01:12",
+   "date_unixtime": "1790175672",
+   "actor": "Kenzo Spears🤕",
+   "actor_id": "user710131221",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 13,
+   "type": "service",
+   "date": "2026-09-23T18:10:46",
+   "date_unixtime": "1790176246",
+   "actor": "Splin",
+   "actor_id": "user1108968140",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 14,
+   "type": "service",
+   "date": "2026-09-23T18:15:11",
+   "date_unixtime": "1790176511",
+   "actor": "alexander",
+   "actor_id": "user551068359",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 15,
+   "type": "service",
+   "date": "2026-09-23T18:15:41",
+   "date_unixtime": "1790176541",
+   "actor": "Max Bogus",
+   "actor_id": "user178831004",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 16,
+   "type": "service",
+   "date": "2026-09-23T18:16:59",
+   "date_unixtime": "1790176619",
+   "actor": "Max Max",
+   "actor_id": "user1353943052",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 17,
+   "type": "service",
+   "date": "2026-09-23T18:20:57",
+   "date_unixtime": "1790176857",
+   "actor": "George Gavrilov",
+   "actor_id": "user701303156",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 18,
+   "type": "message",
+   "date": "2026-09-23T18:21:35",
+   "date_unixtime": "1790176895",
+   "edited": "2026-09-23T18:22:06",
+   "edited_unixtime": "1790176926",
+   "from": "George Gavrilov",
+   "from_id": "user701303156",
+   "text": "всем добрый день !",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "всем добрый день !"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 5,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "Stepan",
+        "from_id": "user704503432",
+        "date": "2026-09-23T19:22:20"
+       },
+       {
+        "from": "Setched Meow",
+        "from_id": "user1124845243",
+        "date": "2026-09-23T19:01:01"
+       },
+       {
+        "from": "Аслан Тамаев",
+        "from_id": "user766209517",
+        "date": "2026-09-23T18:53:48"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 19,
+   "type": "service",
+   "date": "2026-09-23T18:28:16",
+   "date_unixtime": "1790177296",
+   "actor": "TimXa",
+   "actor_id": "user5183903450",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 20,
+   "type": "service",
+   "date": "2026-09-23T18:29:40",
+   "date_unixtime": "1790177380",
+   "actor": "Степан",
+   "actor_id": "user998781783",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 21,
+   "type": "service",
+   "date": "2026-09-23T18:35:24",
+   "date_unixtime": "1790177724",
+   "actor": "Никита developer",
+   "actor_id": "user5604146338",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 22,
+   "type": "service",
+   "date": "2026-09-23T18:37:55",
+   "date_unixtime": "1790177875",
+   "actor": "Кирилл",
+   "actor_id": "user2026506037",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 23,
+   "type": "service",
+   "date": "2026-09-23T18:39:27",
+   "date_unixtime": "1790177967",
+   "actor": "Андрей",
+   "actor_id": "user192595267",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 24,
+   "type": "service",
+   "date": "2026-09-23T18:48:21",
+   "date_unixtime": "1790178501",
+   "actor": "Софья Овсянникова",
+   "actor_id": "user5406917402",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 25,
+   "type": "service",
+   "date": "2026-09-23T18:49:49",
+   "date_unixtime": "1790178589",
+   "actor": "Fedya Sukharev",
+   "actor_id": "user666839792",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 26,
+   "type": "service",
+   "date": "2026-09-23T18:50:16",
+   "date_unixtime": "1790178616",
+   "actor": "Diana",
+   "actor_id": "user1387377244",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 27,
+   "type": "service",
+   "date": "2026-09-23T18:52:29",
+   "date_unixtime": "1790178749",
+   "actor": "Arseniy \"bz4\" Ponomarev",
+   "actor_id": "user795547364",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 28,
+   "type": "service",
+   "date": "2026-09-23T18:53:42",
+   "date_unixtime": "1790178822",
+   "actor": "Аслан Тамаев",
+   "actor_id": "user766209517",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 29,
+   "type": "message",
+   "date": "2026-09-23T18:54:02",
+   "date_unixtime": "1790178842",
+   "edited": "2026-09-23T18:54:19",
+   "edited_unixtime": "1790178859",
+   "from": "Аслан Тамаев",
+   "from_id": "user766209517",
+   "text": "капитаны, всем общий!",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "капитаны, всем общий!"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 4,
+      "emoji": "🔥",
+      "recent": [
+       {
+        "from": "Stepan",
+        "from_id": "user704503432",
+        "date": "2026-09-23T19:22:21"
+       },
+       {
+        "from": "Setched Meow",
+        "from_id": "user1124845243",
+        "date": "2026-09-23T19:00:52"
+       }
+      ]
+     },
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "🤝",
+      "recent": [
+       {
+        "from": "Shyta_Fycka",
+        "from_id": "user7775362280",
+        "date": "2026-09-23T18:55:41"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 30,
+   "type": "service",
+   "date": "2026-09-23T18:55:31",
+   "date_unixtime": "1790178931",
+   "actor": "Shyta_Fycka",
+   "actor_id": "user7775362280",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 31,
+   "type": "service",
+   "date": "2026-09-23T18:55:36",
+   "date_unixtime": "1790178936",
+   "actor": "Setched Meow",
+   "actor_id": "user1124845243",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 32,
+   "type": "message",
+   "date": "2026-09-23T18:55:53",
+   "date_unixtime": "1790178953",
+   "edited": "2026-09-23T19:00:55",
+   "edited_unixtime": "1790179255",
+   "from": "Arseniy \"bz4\" Ponomarev",
+   "from_id": "user795547364",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "AnimatedSticker.tgs",
+   "file_size": 18705,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 2670,
+   "media_type": "sticker",
+   "sticker_emoji": "🙏",
+   "mime_type": "application/x-tgsticker",
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": [],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "❤‍🔥",
+      "recent": [
+       {
+        "from": "Setched Meow",
+        "from_id": "user1124845243",
+        "date": "2026-09-23T19:00:55"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 33,
+   "type": "message",
+   "date": "2026-09-23T18:56:24",
+   "date_unixtime": "1790178984",
+   "edited": "2026-09-23T18:56:30",
+   "edited_unixtime": "1790178990",
+   "from": "Setched Meow",
+   "from_id": "user1124845243",
+   "text": "всем приветик",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "всем приветик"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "🔥",
+      "recent": [
+       {
+        "from": "Аслан Тамаев",
+        "from_id": "user766209517",
+        "date": "2026-09-23T18:56:30"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 34,
+   "type": "service",
+   "date": "2026-09-23T19:00:36",
+   "date_unixtime": "1790179236",
+   "actor": "Daniil Plotnikov",
+   "actor_id": "user572687787",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 35,
+   "type": "service",
+   "date": "2026-09-23T19:03:53",
+   "date_unixtime": "1790179433",
+   "actor": "Tostorik",
+   "actor_id": "user5291866896",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 36,
+   "type": "service",
+   "date": "2026-09-23T19:04:39",
+   "date_unixtime": "1790179479",
+   "actor": "Makar",
+   "actor_id": "user1050620339",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 37,
+   "type": "message",
+   "date": "2026-09-23T19:04:47",
+   "date_unixtime": "1790179487",
+   "edited": "2026-09-23T19:05:03",
+   "edited_unixtime": "1790179503",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    "🔥 Высылаем ",
+    {
+     "type": "bold",
+     "text": "полное расписание"
+    },
+    " ",
+    {
+     "type": "bold",
+     "text": "хакатона"
+    },
+    " для ознакомления и планирования графика: ",
+    {
+     "type": "link",
+     "text": "https://disk.yandex.ru/i/u8rpECgD0V6-Yg"
+    },
+    "\n\n",
+    {
+     "type": "bold",
+     "text": "25 сентября в 10:00 МСК"
+    },
+    " состоится открытие хакатона.\n",
+    {
+     "type": "bold",
+     "text": "Формат: "
+    },
+    "очный с трансляцией.",
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    {
+     "type": "italic",
+     "text": "❗️ "
+    },
+    {
+     "type": "bold",
+     "text": "Участие в открытии хакатона в очном формате доступно ТОЛЬКО по предварительной записи, так как места ограничены."
+    },
+    "\n\n",
+    {
+     "type": "italic",
+     "text": "Для записи"
+    },
+    " ",
+    {
+     "type": "italic",
+     "text": "вы можете написать в аккаунт поддержки Телеграм: "
+    },
+    {
+     "type": "link",
+     "text": "https://t.me/mt_hackathon_support"
+    },
+    {
+     "type": "italic",
+     "text": " или написать на почту: "
+    },
+    {
+     "type": "email",
+     "text": "ask@pgenesis.ru"
+    },
+    {
+     "type": "italic",
+     "text": ".\n"
+    },
+    {
+     "type": "blockquote",
+     "text": "При записи необходимо уточнить:\n– Название команды;\n– Полные ФИО всех участников команды, которые точно смогут присутствовать.",
+     "collapsed": false
+    },
+    "\n\n📌 ",
+    {
+     "type": "bold",
+     "text": "Завтра утром всем участникам команд будут отправлены письма-приглашения к участию"
+    },
+    " — необходимо будет перейти на платформу хакатона и подтвердить своё участия для сохранения функционала личного кабинета.\n\nОстаемся на связи!"
+   ],
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "🔥 Высылаем "
+    },
+    {
+     "type": "bold",
+     "text": "полное расписание"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "bold",
+     "text": "хакатона"
+    },
+    {
+     "type": "plain",
+     "text": " для ознакомления и планирования графика: "
+    },
+    {
+     "type": "link",
+     "text": "https://disk.yandex.ru/i/u8rpECgD0V6-Yg"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "bold",
+     "text": "25 сентября в 10:00 МСК"
+    },
+    {
+     "type": "plain",
+     "text": " состоится открытие хакатона.\n"
+    },
+    {
+     "type": "bold",
+     "text": "Формат: "
+    },
+    {
+     "type": "plain",
+     "text": "очный с трансляцией."
+    },
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    {
+     "type": "italic",
+     "text": "❗️ "
+    },
+    {
+     "type": "bold",
+     "text": "Участие в открытии хакатона в очном формате доступно ТОЛЬКО по предварительной записи, так как места ограничены."
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "italic",
+     "text": "Для записи"
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "italic",
+     "text": "вы можете написать в аккаунт поддержки Телеграм: "
+    },
+    {
+     "type": "link",
+     "text": "https://t.me/mt_hackathon_support"
+    },
+    {
+     "type": "italic",
+     "text": " или написать на почту: "
+    },
+    {
+     "type": "email",
+     "text": "ask@pgenesis.ru"
+    },
+    {
+     "type": "italic",
+     "text": ".\n"
+    },
+    {
+     "type": "blockquote",
+     "text": "При записи необходимо уточнить:\n– Название команды;\n– Полные ФИО всех участников команды, которые точно смогут присутствовать.",
+     "collapsed": false
+    },
+    {
+     "type": "plain",
+     "text": "\n\n📌 "
+    },
+    {
+     "type": "bold",
+     "text": "Завтра утром всем участникам команд будут отправлены письма-приглашения к участию"
+    },
+    {
+     "type": "plain",
+     "text": " — необходимо будет перейти на платформу хакатона и подтвердить своё участия для сохранения функционала личного кабинета.\n\nОстаемся на связи!"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "George Gavrilov",
+        "from_id": "user701303156",
+        "date": "2026-09-23T19:05:03"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 38,
+   "type": "service",
+   "date": "2026-09-23T19:04:47",
+   "date_unixtime": "1790179487",
+   "actor": "Иван Кузнецов",
+   "actor_id": "user95158993",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 39,
+   "type": "service",
+   "date": "2026-09-23T19:04:51",
+   "date_unixtime": "1790179491",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "pin_message",
+   "message_id": 37,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 40,
+   "type": "service",
+   "date": "2026-09-23T19:12:03",
+   "date_unixtime": "1790179923",
+   "actor": "Boba Vova",
+   "actor_id": "user1116637292",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 41,
+   "type": "service",
+   "date": "2026-09-23T19:13:30",
+   "date_unixtime": "1790180010",
+   "actor": "Khasan Sadykov",
+   "actor_id": "user935362677",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 42,
+   "type": "service",
+   "date": "2026-09-23T19:17:16",
+   "date_unixtime": "1790180236",
+   "actor": "MAX",
+   "actor_id": "user1387680086",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 43,
+   "type": "service",
+   "date": "2026-09-23T19:17:26",
+   "date_unixtime": "1790180246",
+   "actor": "MAX",
+   "actor_id": "user1387680086",
+   "action": "remove_members",
+   "members": [
+    "MAX"
+   ],
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 44,
+   "type": "service",
+   "date": "2026-09-23T19:18:07",
+   "date_unixtime": "1790180287",
+   "actor": "Роман",
+   "actor_id": "user1032305869",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 45,
+   "type": "service",
+   "date": "2026-09-23T19:21:12",
+   "date_unixtime": "1790180472",
+   "actor": "Marscol",
+   "actor_id": "user1966011214",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 46,
+   "type": "service",
+   "date": "2026-09-23T19:21:23",
+   "date_unixtime": "1790180483",
+   "actor": "Amik",
+   "actor_id": "user218713399",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 47,
+   "type": "service",
+   "date": "2026-09-23T19:21:39",
+   "date_unixtime": "1790180499",
+   "actor": "Stepan",
+   "actor_id": "user704503432",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 48,
+   "type": "service",
+   "date": "2026-09-23T19:23:52",
+   "date_unixtime": "1790180632",
+   "actor": "Никита",
+   "actor_id": "user861064373",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 49,
+   "type": "service",
+   "date": "2026-09-23T19:26:55",
+   "date_unixtime": "1790180815",
+   "actor": "Denis Zorin",
+   "actor_id": "user1092734281",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 50,
+   "type": "service",
+   "date": "2026-09-23T19:30:19",
+   "date_unixtime": "1790181019",
+   "actor": "me",
+   "actor_id": "user8873155859",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 51,
+   "type": "service",
+   "date": "2026-09-23T19:43:10",
+   "date_unixtime": "1790181790",
+   "actor": "Kubrik",
+   "actor_id": "user829349441",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 52,
+   "type": "service",
+   "date": "2026-09-23T19:46:12",
+   "date_unixtime": "1790181972",
+   "actor": "Миша",
+   "actor_id": "user1061646632",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 53,
+   "type": "service",
+   "date": "2026-09-23T19:46:19",
+   "date_unixtime": "1790181979",
+   "actor": "Alfred Vardazarian",
+   "actor_id": "user414908437",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 54,
+   "type": "service",
+   "date": "2026-09-23T19:53:28",
+   "date_unixtime": "1790182408",
+   "actor": "ksenokrat",
+   "actor_id": "user1692652856",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 55,
+   "type": "service",
+   "date": "2026-09-23T19:54:12",
+   "date_unixtime": "1790182452",
+   "actor": "кеша птица",
+   "actor_id": "user957066539",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 56,
+   "type": "service",
+   "date": "2026-09-23T19:55:56",
+   "date_unixtime": "1790182556",
+   "actor": "Даниэль",
+   "actor_id": "user465056545",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 57,
+   "type": "service",
+   "date": "2026-09-23T19:56:15",
+   "date_unixtime": "1790182575",
+   "actor": "Mikhail",
+   "actor_id": "user1303242675",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 58,
+   "type": "service",
+   "date": "2026-09-23T19:56:27",
+   "date_unixtime": "1790182587",
+   "actor": "r0mberg",
+   "actor_id": "user266348333",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 59,
+   "type": "message",
+   "date": "2026-09-23T19:57:24",
+   "date_unixtime": "1790182644",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "reply_to_message_id": 37,
+   "text": "Капитаны, еще раз обращаем на это внимание — если желаете явиться очно на открытие, напишите нам в личные сообщения по форме, указанной в сообщении выше 🙌",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Капитаны, еще раз обращаем на это внимание — если желаете явиться очно на открытие, напишите нам в личные сообщения по форме, указанной в сообщении выше 🙌"
+    }
+   ]
+  },
+  {
+   "id": 60,
+   "type": "message",
+   "date": "2026-09-23T19:58:53",
+   "date_unixtime": "1790182733",
+   "from": "Kubrik",
+   "from_id": "user829349441",
+   "reply_to_message_id": 37,
+   "text": "А можете адрес, где открытие будет проходить написать, пожалуйста",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "А можете адрес, где открытие будет проходить написать, пожалуйста"
+    }
+   ]
+  },
+  {
+   "id": 61,
+   "type": "service",
+   "date": "2026-09-23T19:59:11",
+   "date_unixtime": "1790182751",
+   "actor": "Михаил",
+   "actor_id": "user1626141779",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 63,
+   "type": "message",
+   "date": "2026-09-23T20:02:36",
+   "date_unixtime": "1790182956",
+   "from": "Max Bogus",
+   "from_id": "user178831004",
+   "text": "Всей команде нужно быть или только капитану? или можно онлайн?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Всей команде нужно быть или только капитану? или можно онлайн?"
+    }
+   ]
+  },
+  {
+   "id": 64,
+   "type": "service",
+   "date": "2026-09-23T20:02:54",
+   "date_unixtime": "1790182974",
+   "actor": "кореш",
+   "actor_id": "user1659485806",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 65,
+   "type": "service",
+   "date": "2026-09-23T20:06:18",
+   "date_unixtime": "1790183178",
+   "actor": "Артем",
+   "actor_id": "user300108554",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 66,
+   "type": "service",
+   "date": "2026-09-23T20:06:31",
+   "date_unixtime": "1790183191",
+   "actor": "Atom",
+   "actor_id": "user2054806353",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 67,
+   "type": "message",
+   "date": "2026-09-23T20:08:23",
+   "date_unixtime": "1790183303",
+   "from": "Никита",
+   "from_id": "user861064373",
+   "text": "А вместо капитана может другой участник приехать?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "А вместо капитана может другой участник приехать?"
+    }
+   ]
+  },
+  {
+   "id": 68,
+   "type": "service",
+   "date": "2026-09-23T20:08:50",
+   "date_unixtime": "1790183330",
+   "actor": "Павел Колов 🤑",
+   "actor_id": "user1950133464",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 69,
+   "type": "message",
+   "date": "2026-09-23T20:19:26",
+   "date_unixtime": "1790183966",
+   "edited": "2026-09-23T20:48:41",
+   "edited_unixtime": "1790185721",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "reply_to_message_id": 67,
+   "text": "На открытие могут приехать не только капитаны, но и все другие участники команд.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "На открытие могут приехать не только капитаны, но и все другие участники команд."
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👍",
+      "recent": [
+       {
+        "from": "Никита",
+        "from_id": "user861064373",
+        "date": "2026-09-23T20:48:41"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 70,
+   "type": "service",
+   "date": "2026-09-23T20:34:00",
+   "date_unixtime": "1790184840",
+   "actor": "Александра Лагутина",
+   "actor_id": "user1439320163",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 71,
+   "type": "service",
+   "date": "2026-09-23T20:50:31",
+   "date_unixtime": "1790185831",
+   "actor": "Вадим",
+   "actor_id": "user704564959",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 72,
+   "type": "service",
+   "date": "2026-09-23T21:00:43",
+   "date_unixtime": "1790186443",
+   "actor": "Danil",
+   "actor_id": "user838882461",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 73,
+   "type": "service",
+   "date": "2026-09-23T21:08:20",
+   "date_unixtime": "1790186900",
+   "actor": "97599 VladT",
+   "actor_id": "user5339664084",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 74,
+   "type": "service",
+   "date": "2026-09-23T22:06:56",
+   "date_unixtime": "1790190416",
+   "actor": "wo khmelevskii",
+   "actor_id": "user685324230",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 75,
+   "type": "service",
+   "date": "2026-09-23T22:12:46",
+   "date_unixtime": "1790190766",
+   "actor": "Костя",
+   "actor_id": "user1030580323",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 76,
+   "type": "service",
+   "date": "2026-09-23T22:15:50",
+   "date_unixtime": "1790190950",
+   "actor": "Alexandra Fedorova",
+   "actor_id": "user606105034",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 77,
+   "type": "service",
+   "date": "2026-09-23T22:26:19",
+   "date_unixtime": "1790191579",
+   "actor": "лекша",
+   "actor_id": "user5157831282",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 78,
+   "type": "service",
+   "date": "2026-09-23T23:23:56",
+   "date_unixtime": "1790195036",
+   "actor": "Никита",
+   "actor_id": "user5149107069",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 79,
+   "type": "service",
+   "date": "2026-09-23T23:26:57",
+   "date_unixtime": "1790195217",
+   "actor": "Алан",
+   "actor_id": "user1292692933",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 80,
+   "type": "message",
+   "date": "2026-09-23T23:27:04",
+   "date_unixtime": "1790195224",
+   "edited": "2026-09-23T23:29:04",
+   "edited_unixtime": "1790195344",
+   "from": "Алан",
+   "from_id": "user1292692933",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "sticker.webm",
+   "file_size": 156560,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 6662,
+   "media_type": "sticker",
+   "sticker_emoji": "🤩",
+   "mime_type": "video/webm",
+   "duration_seconds": 3,
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": [],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 2,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "wasby",
+        "from_id": "user869082080",
+        "date": "2026-09-24T10:17:22"
+       },
+       {
+        "from": "Кирилл",
+        "from_id": "user2026506037",
+        "date": "2026-09-23T23:29:04"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 81,
+   "type": "service",
+   "date": "2026-09-23T23:38:09",
+   "date_unixtime": "1790195889",
+   "actor": "макс симаков",
+   "actor_id": "user706420813",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 82,
+   "type": "message",
+   "date": "2026-09-23T23:38:57",
+   "date_unixtime": "1790195937",
+   "from": "Кирилл",
+   "from_id": "user2026506037",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "sticker.webp",
+   "file_size": 24410,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 12274,
+   "media_type": "sticker",
+   "sticker_emoji": "💪",
+   "mime_type": "image/webp",
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 83,
+   "type": "service",
+   "date": "2026-09-23T23:45:35",
+   "date_unixtime": "1790196335",
+   "actor": "🐘 Артуритто",
+   "actor_id": "user1230618415",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 84,
+   "type": "service",
+   "date": "2026-09-23T23:53:19",
+   "date_unixtime": "1790196799",
+   "actor": "Polina Vitkovskaya",
+   "actor_id": "user461845278",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 85,
+   "type": "message",
+   "date": "2026-09-24T00:05:09",
+   "date_unixtime": "1790197509",
+   "edited": "2026-09-24T00:05:20",
+   "edited_unixtime": "1790197520",
+   "from": "Setched Meow",
+   "from_id": "user1124845243",
+   "text": "Здравствуйте, извините что поздно пишу, у меня вопрос:\nДо какого времени в воскресенье нужно сделать и сдать проект? И так же в каком формате мы его прикрепляем, будет ли гитлаб условный? Спасибо.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Здравствуйте, извините что поздно пишу, у меня вопрос:\nДо какого времени в воскресенье нужно сделать и сдать проект? И так же в каком формате мы его прикрепляем, будет ли гитлаб условный? Спасибо."
+    }
+   ]
+  },
+  {
+   "id": 86,
+   "type": "message",
+   "date": "2026-09-24T01:24:43",
+   "date_unixtime": "1790202283",
+   "from": "Stepan",
+   "from_id": "user704503432",
+   "text": [
+    {
+     "type": "mention",
+     "text": "@nesclass"
+    },
+    " уау привет"
+   ],
+   "text_entities": [
+    {
+     "type": "mention",
+     "text": "@nesclass"
+    },
+    {
+     "type": "plain",
+     "text": " уау привет"
+    }
+   ]
+  },
+  {
+   "id": 87,
+   "type": "message",
+   "date": "2026-09-24T01:25:11",
+   "date_unixtime": "1790202311",
+   "from": "Stepan",
+   "from_id": "user704503432",
+   "text": "Не уверен, что ты меня помнишь ахах, но у нас солидный interception по хакатонам и личный тгк",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Не уверен, что ты меня помнишь ахах, но у нас солидный interception по хакатонам и личный тгк"
+    }
+   ]
+  },
+  {
+   "id": 88,
+   "type": "service",
+   "date": "2026-09-24T09:07:28",
+   "date_unixtime": "1790230048",
+   "actor": "Ilya Shubin",
+   "actor_id": "user2074893756",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 89,
+   "type": "message",
+   "date": "2026-09-24T09:33:49",
+   "date_unixtime": "1790231629",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "reply_to_message_id": 85,
+   "text": "Добрый день! В закрепе полное расписание задачи, обратите на него внимание. Дедлайн загрузки решений — 27 сентября, 23:59 МСК.\n\nФормат загрузки решений будет уточнен в полном описании задачи.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Добрый день! В закрепе полное расписание задачи, обратите на него внимание. Дедлайн загрузки решений — 27 сентября, 23:59 МСК.\n\nФормат загрузки решений будет уточнен в полном описании задачи."
+    }
+   ]
+  },
+  {
+   "id": 90,
+   "type": "message",
+   "date": "2026-09-24T10:12:21",
+   "date_unixtime": "1790233941",
+   "from": "Никита",
+   "from_id": "user5149107069",
+   "photo": "(File not included. Change data exporting settings to download.)",
+   "photo_file_size": 42962,
+   "width": 1177,
+   "height": 2560,
+   "text": "У всех так? Или приколы провайдера?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "У всех так? Или приколы провайдера?"
+    }
+   ]
+  },
+  {
+   "id": 91,
+   "type": "message",
+   "date": "2026-09-24T10:12:41",
+   "date_unixtime": "1790233961",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    {
+     "type": "bold",
+     "text": "✅ Подтверждение участия всеми участниками"
+    },
+    "\n\nВсем участникам команд отправлены письма-приглашения к участию. \n\n‼️ Обязательно убедитесь, что ",
+    {
+     "type": "bold",
+     "text": "все члены вашей команды подтвердили участие"
+    },
+    " на платформе хакатона.\n💡 ",
+    {
+     "type": "italic",
+     "text": "Для подтверждения участия вы можете либо перейти по ссылке из письма, либо нажать на кнопку подтверждения участия в дашборде платформы."
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "✅ Подтверждение участия всеми участниками"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nВсем участникам команд отправлены письма-приглашения к участию. \n\n‼️ Обязательно убедитесь, что "
+    },
+    {
+     "type": "bold",
+     "text": "все члены вашей команды подтвердили участие"
+    },
+    {
+     "type": "plain",
+     "text": " на платформе хакатона.\n💡 "
+    },
+    {
+     "type": "italic",
+     "text": "Для подтверждения участия вы можете либо перейти по ссылке из письма, либо нажать на кнопку подтверждения участия в дашборде платформы."
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 92,
+   "type": "service",
+   "date": "2026-09-24T10:15:07",
+   "date_unixtime": "1790234107",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "pin_message",
+   "message_id": 91,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 93,
+   "type": "service",
+   "date": "2026-09-24T10:16:00",
+   "date_unixtime": "1790234160",
+   "actor": "wasby",
+   "actor_id": "user869082080",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 94,
+   "type": "message",
+   "date": "2026-09-24T10:17:03",
+   "date_unixtime": "1790234223",
+   "edited": "2026-09-24T10:21:45",
+   "edited_unixtime": "1790234505",
+   "from": "wasby",
+   "from_id": "user869082080",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "sticker.webm",
+   "file_size": 181193,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 20230,
+   "media_type": "sticker",
+   "sticker_emoji": "😎",
+   "mime_type": "video/webm",
+   "duration_seconds": 3,
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": [],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "Алан",
+        "from_id": "user1292692933",
+        "date": "2026-09-24T10:21:45"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 95,
+   "type": "message",
+   "date": "2026-09-24T10:18:43",
+   "date_unixtime": "1790234323",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "reply_to_message_id": 90,
+   "text": "Платформа работает — вероятно из-за мобильного интернета в силу текущих ограничений.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Платформа работает — вероятно из-за мобильного интернета в силу текущих ограничений."
+    }
+   ]
+  },
+  {
+   "id": 96,
+   "type": "message",
+   "date": "2026-09-24T11:05:41",
+   "date_unixtime": "1790237141",
+   "from": "Marscol",
+   "from_id": "user1966011214",
+   "text": "Добрый день! Должно ли участникам, которые будут очно присутствовать на открытии, прийти дополнительное письмо с подтверждением?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Добрый день! Должно ли участникам, которые будут очно присутствовать на открытии, прийти дополнительное письмо с подтверждением?"
+    }
+   ]
+  },
+  {
+   "id": 97,
+   "type": "message",
+   "date": "2026-09-24T11:20:41",
+   "date_unixtime": "1790238041",
+   "edited": "2026-09-24T11:29:18",
+   "edited_unixtime": "1790238558",
+   "from": "Kirill Sergeenko",
+   "from_id": "user151522593",
+   "reply_to_message_id": 96,
+   "text": "Добрый день\nНет. Если написали и получили ответ от поддержки, значит -  внесены в список",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Добрый день\nНет. Если написали и получили ответ от поддержки, значит -  внесены в список"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "Marscol",
+        "from_id": "user1966011214",
+        "date": "2026-09-24T11:29:19"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 98,
+   "type": "service",
+   "date": "2026-09-24T11:57:13",
+   "date_unixtime": "1790240233",
+   "actor": "RedLim",
+   "actor_id": "user441708488",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 99,
+   "type": "service",
+   "date": "2026-09-24T14:15:51",
+   "date_unixtime": "1790248551",
+   "actor": "Serfetto",
+   "actor_id": "user1067700008",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 100,
+   "type": "service",
+   "date": "2026-09-24T14:32:02",
+   "date_unixtime": "1790249522",
+   "actor": ".",
+   "actor_id": "user1158798474",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 101,
+   "type": "message",
+   "date": "2026-09-24T14:45:48",
+   "date_unixtime": "1790250348",
+   "edited": "2026-09-24T14:46:07",
+   "edited_unixtime": "1790250367",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    {
+     "type": "bold",
+     "text": "🚀 Расписание на 25 сентября\n"
+    },
+    "\n1️⃣",
+    {
+     "type": "bold",
+     "text": " В 10:00 МСК состоится открытие"
+    },
+    ", на котором будут презентованы задачи.\n‼️ Участники, которые записались на очное участие в открытии хакатона, получат памятку в личные сообщения.\n\n💡 Отметим, что будет также трансляция — участники, которые будут не на площадке, могут зайти онлайн.\n",
+    {
+     "type": "bold",
+     "text": "*Ссылка будет выслана накануне мероприятия.\n"
+    },
+    "\n2️⃣ ",
+    {
+     "type": "bold",
+     "text": "После открытия хакатона будут опубликованы материалы задачи"
+    },
+    ": полное описание, данные, критерии оценивания и формат решения.\n\n3️⃣ ",
+    {
+     "type": "bold",
+     "text": "В 17:00 МСК состоится QA-сессия"
+    },
+    ", на которой вы сможете задать вопросы экспертам: по данным и условиям задачи.\n",
+    {
+     "type": "bold",
+     "text": "*Ссылка будет выслана накануне мероприятия.\n"
+    },
+    {
+     "type": "italic",
+     "text": "‼️ Если у вас возникают вопросы сразу после просмотра материалов, дождитесь QA-сессии и задайте его там, чтобы эксперты смогли подробно разъяснить голосом.\n"
+    },
+    "\nМы скоро начинаем! 🤩"
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "🚀 Расписание на 25 сентября\n"
+    },
+    {
+     "type": "plain",
+     "text": "\n1️⃣"
+    },
+    {
+     "type": "bold",
+     "text": " В 10:00 МСК состоится открытие"
+    },
+    {
+     "type": "plain",
+     "text": ", на котором будут презентованы задачи.\n‼️ Участники, которые записались на очное участие в открытии хакатона, получат памятку в личные сообщения.\n\n💡 Отметим, что будет также трансляция — участники, которые будут не на площадке, могут зайти онлайн.\n"
+    },
+    {
+     "type": "bold",
+     "text": "*Ссылка будет выслана накануне мероприятия.\n"
+    },
+    {
+     "type": "plain",
+     "text": "\n2️⃣ "
+    },
+    {
+     "type": "bold",
+     "text": "После открытия хакатона будут опубликованы материалы задачи"
+    },
+    {
+     "type": "plain",
+     "text": ": полное описание, данные, критерии оценивания и формат решения.\n\n3️⃣ "
+    },
+    {
+     "type": "bold",
+     "text": "В 17:00 МСК состоится QA-сессия"
+    },
+    {
+     "type": "plain",
+     "text": ", на которой вы сможете задать вопросы экспертам: по данным и условиям задачи.\n"
+    },
+    {
+     "type": "bold",
+     "text": "*Ссылка будет выслана накануне мероприятия.\n"
+    },
+    {
+     "type": "italic",
+     "text": "‼️ Если у вас возникают вопросы сразу после просмотра материалов, дождитесь QA-сессии и задайте его там, чтобы эксперты смогли подробно разъяснить голосом.\n"
+    },
+    {
+     "type": "plain",
+     "text": "\nМы скоро начинаем! 🤩"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 3,
+      "emoji": "🔥",
+      "recent": [
+       {
+        "from": "Max Max",
+        "from_id": "user1353943052",
+        "date": "2026-09-24T15:28:42"
+       },
+       {
+        "from": "Arseniy \"bz4\" Ponomarev",
+        "from_id": "user795547364",
+        "date": "2026-09-24T14:46:23"
+       },
+       {
+        "from": "Alfred Vardazarian",
+        "from_id": "user414908437",
+        "date": "2026-09-24T14:46:07"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 102,
+   "type": "service",
+   "date": "2026-09-24T14:46:12",
+   "date_unixtime": "1790250372",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "pin_message",
+   "message_id": 101,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 103,
+   "type": "message",
+   "date": "2026-09-25T07:46:05",
+   "date_unixtime": "1790311565",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "forwarded_from": "Хакатон Московского транспорта",
+   "forwarded_from_id": "channel4302131599",
+   "text": [
+    {
+     "type": "bold",
+     "text": "🎉"
+    },
+    {
+     "type": "bold",
+     "text": " Открытие Хакатона Московского транспорта"
+    },
+    "\n\nУчастники, ",
+    {
+     "type": "bold",
+     "text": "сегодня в 10:00 МСК состоится открытие хакатона"
+    },
+    ", где будут презентованы задачи.\n",
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    " Участников, кто будет очно, будем ждать на площадке к 9:30 МСК.\n\n",
+    {
+     "type": "bold",
+     "text": "Посмотреть трансляцию открытия можно будет на сайте хакатона или в VK Видео:"
+    },
+    "\n\n",
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    " ",
+    {
+     "type": "text_link",
+     "text": "С",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "text_link",
+     "text": "айт хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    "\n\n",
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    "  ",
+    {
+     "type": "text_link",
+     "text": "VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "🎉"
+    },
+    {
+     "type": "bold",
+     "text": " Открытие Хакатона Московского транспорта"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nУчастники, "
+    },
+    {
+     "type": "bold",
+     "text": "сегодня в 10:00 МСК состоится открытие хакатона"
+    },
+    {
+     "type": "plain",
+     "text": ", где будут презентованы задачи.\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " Участников, кто будет очно, будем ждать на площадке к 9:30 МСК.\n\n"
+    },
+    {
+     "type": "bold",
+     "text": "Посмотреть трансляцию открытия можно будет на сайте хакатона или в VK Видео:"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "text_link",
+     "text": "С",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "text_link",
+     "text": "айт хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": "  "
+    },
+    {
+     "type": "text_link",
+     "text": "VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 104,
+   "type": "message",
+   "date": "2026-09-25T09:30:37",
+   "date_unixtime": "1790317837",
+   "edited": "2026-09-25T09:30:47",
+   "edited_unixtime": "1790317847",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "🔔",
+     "document_id": ""
+    },
+    " ",
+    {
+     "type": "bold",
+     "text": "Уже через 30 минут"
+    },
+    " пройдет открытие хакатона.\n\n",
+    {
+     "type": "bold",
+     "text": "Трансляция открытия"
+    },
+    "\n",
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    {
+     "type": "text_link",
+     "text": " Сайте хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    "\n",
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    " ",
+    {
+     "type": "text_link",
+     "text": " VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "🔔",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "bold",
+     "text": "Уже через 30 минут"
+    },
+    {
+     "type": "plain",
+     "text": " пройдет открытие хакатона.\n\n"
+    },
+    {
+     "type": "bold",
+     "text": "Трансляция открытия"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    {
+     "type": "text_link",
+     "text": " Сайте хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "text_link",
+     "text": " VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 2,
+      "emoji": "❤‍🔥",
+      "recent": [
+       {
+        "from": "Дарья",
+        "from_id": "user977683571",
+        "date": "2026-09-25T09:43:33"
+       },
+       {
+        "from": "Arseniy \"bz4\" Ponomarev",
+        "from_id": "user795547364",
+        "date": "2026-09-25T09:30:47"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 105,
+   "type": "message",
+   "date": "2026-09-25T09:55:39",
+   "date_unixtime": "1790319339",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "🔔",
+     "document_id": ""
+    },
+    {
+     "type": "bold",
+     "text": " 5 минут"
+    },
+    " до открытия!\n\n",
+    {
+     "type": "bold",
+     "text": "Трансляция:"
+    },
+    "\n",
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    {
+     "type": "text_link",
+     "text": " на Сайте хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    "\n",
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    " ",
+    {
+     "type": "text_link",
+     "text": " VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "🔔",
+     "document_id": ""
+    },
+    {
+     "type": "bold",
+     "text": " 5 минут"
+    },
+    {
+     "type": "plain",
+     "text": " до открытия!\n\n"
+    },
+    {
+     "type": "bold",
+     "text": "Трансляция:"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "👍",
+     "document_id": ""
+    },
+    {
+     "type": "text_link",
+     "text": " на Сайте хакатона ",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "custom_emoji",
+     "text": "❤️",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "text_link",
+     "text": " VK Видео",
+     "href": "https://vkvideo.ru/live-171174178_456239139?list=ln-LLckSFdubsSzWolwVD"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 106,
+   "type": "service",
+   "date": "2026-09-25T10:01:37",
+   "date_unixtime": "1790319697",
+   "actor": "Кирилл",
+   "actor_id": "user987073797",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 107,
+   "type": "message",
+   "date": "2026-09-25T10:42:47",
+   "date_unixtime": "1790322167",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    {
+     "type": "bold",
+     "text": "Описание задачи «"
+    },
+    {
+     "type": "text_link",
+     "text": "ИИ-прогноз загрузки трамвайных маршрутов",
+     "href": "https://disk.yandex.ru/i/TddeSM7E-A0EQw"
+    },
+    {
+     "type": "bold",
+     "text": "»\n"
+    },
+    "\n",
+    {
+     "type": "bold",
+     "text": "Хакатон Московского транспорта стартовал"
+    },
+    " — мы публикуем полное описание задачи, критерии оценивания и формат решения.\n\n",
+    {
+     "type": "italic",
+     "text": "‼️ Если у вас возникают вопросы сразу после просмотра материалов, дождитесь QA-сессии и задайте вопросы на ней, чтобы эксперты смогли подробно разъяснить голосом."
+    },
+    "\n\nНа платформе хакатона у участников ",
+    {
+     "type": "bold",
+     "text": "стали доступны разделы для загрузки решения"
+    },
+    " в двух обязательных версиях:\n\n1️⃣ ",
+    {
+     "type": "bold",
+     "text": "Загрузка csv-файла в разделе «Data Science»"
+    },
+    " — в зачет пойдет лучший результат, полученный за всё время.",
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    {
+     "type": "blockquote",
+     "text": "Лимиты загрузок на каждую команду в день: \n• общее кол-во попыток – 36 (все попытки, включая ошибочные);\n• кол-во успешных попыток – 24 (попытки со скором 0 и выше).",
+     "collapsed": false
+    },
+    "\n\n2️⃣ ",
+    {
+     "type": "bold",
+     "text": "Заполнение полей формы (ссылка/ввод текста) в разделе «Загрузка решения»"
+    },
+    " — сохранится и пойдет на проверку заключительная версия.",
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    "\n❗️ ",
+    {
+     "type": "bold",
+     "text": "Общий дедлайн загрузки решений — 27 сентября, 23:59 МСК"
+    },
+    "\n\nЖелаем всем успехов и продуктивной работы — мы начинаем!"
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "Описание задачи «"
+    },
+    {
+     "type": "text_link",
+     "text": "ИИ-прогноз загрузки трамвайных маршрутов",
+     "href": "https://disk.yandex.ru/i/TddeSM7E-A0EQw"
+    },
+    {
+     "type": "bold",
+     "text": "»\n"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "bold",
+     "text": "Хакатон Московского транспорта стартовал"
+    },
+    {
+     "type": "plain",
+     "text": " — мы публикуем полное описание задачи, критерии оценивания и формат решения.\n\n"
+    },
+    {
+     "type": "italic",
+     "text": "‼️ Если у вас возникают вопросы сразу после просмотра материалов, дождитесь QA-сессии и задайте вопросы на ней, чтобы эксперты смогли подробно разъяснить голосом."
+    },
+    {
+     "type": "plain",
+     "text": "\n\nНа платформе хакатона у участников "
+    },
+    {
+     "type": "bold",
+     "text": "стали доступны разделы для загрузки решения"
+    },
+    {
+     "type": "plain",
+     "text": " в двух обязательных версиях:\n\n1️⃣ "
+    },
+    {
+     "type": "bold",
+     "text": "Загрузка csv-файла в разделе «Data Science»"
+    },
+    {
+     "type": "plain",
+     "text": " — в зачет пойдет лучший результат, полученный за всё время."
+    },
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    {
+     "type": "blockquote",
+     "text": "Лимиты загрузок на каждую команду в день: \n• общее кол-во попыток – 36 (все попытки, включая ошибочные);\n• кол-во успешных попыток – 24 (попытки со скором 0 и выше).",
+     "collapsed": false
+    },
+    {
+     "type": "plain",
+     "text": "\n\n2️⃣ "
+    },
+    {
+     "type": "bold",
+     "text": "Заполнение полей формы (ссылка/ввод текста) в разделе «Загрузка решения»"
+    },
+    {
+     "type": "plain",
+     "text": " — сохранится и пойдет на проверку заключительная версия."
+    },
+    {
+     "type": "bold",
+     "text": "\n"
+    },
+    {
+     "type": "plain",
+     "text": "\n❗️ "
+    },
+    {
+     "type": "bold",
+     "text": "Общий дедлайн загрузки решений — 27 сентября, 23:59 МСК"
+    },
+    {
+     "type": "plain",
+     "text": "\n\nЖелаем всем успехов и продуктивной работы — мы начинаем!"
+    }
+   ]
+  },
+  {
+   "id": 108,
+   "type": "service",
+   "date": "2026-09-25T10:42:50",
+   "date_unixtime": "1790322170",
+   "actor": "Поддержка Хакатона MT",
+   "actor_id": "user7032298449",
+   "action": "pin_message",
+   "message_id": 107,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 109,
+   "type": "message",
+   "date": "2026-09-25T11:03:06",
+   "date_unixtime": "1790323386",
+   "edited": "2026-09-25T11:03:24",
+   "edited_unixtime": "1790323404",
+   "from": "Алан",
+   "from_id": "user1292692933",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "sticker.webm",
+   "file_size": 261188,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 20844,
+   "media_type": "sticker",
+   "sticker_emoji": "⚽️",
+   "mime_type": "video/webm",
+   "duration_seconds": 1,
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": [],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 2,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "wasby",
+        "from_id": "user869082080",
+        "date": "2026-09-25T11:04:10"
+       },
+       {
+        "from": "Кирилл",
+        "from_id": "user2026506037",
+        "date": "2026-09-25T11:03:24"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 110,
+   "type": "message",
+   "date": "2026-09-25T11:23:46",
+   "date_unixtime": "1790324626",
+   "from": "Setched Meow",
+   "from_id": "user1124845243",
+   "text": "Подскажите, выбрать где мы разрабатываем проект можем сами? (GitHub, GitLab..)",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Подскажите, выбрать где мы разрабатываем проект можем сами? (GitHub, GitLab..)"
+    }
+   ]
+  },
+  {
+   "id": 111,
+   "type": "message",
+   "date": "2026-09-25T11:24:29",
+   "date_unixtime": "1790324669",
+   "edited": "2026-09-25T11:24:38",
+   "edited_unixtime": "1790324678",
+   "from": "Даниил (nes)",
+   "from_id": "user135821388",
+   "reply_to_message_id": 86,
+   "text": "хзхахахахаха, да, правда",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "хзхахахахаха, да, правда"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "❤",
+      "recent": [
+       {
+        "from": "Stepan",
+        "from_id": "user704503432",
+        "date": "2026-09-25T11:24:38"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 112,
+   "type": "message",
+   "date": "2026-09-25T11:25:10",
+   "date_unixtime": "1790324710",
+   "from": "Никита",
+   "from_id": "user5149107069",
+   "reply_to_message_id": 110,
+   "text": "Только российский gitverse",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Только российский gitverse"
+    }
+   ]
+  },
+  {
+   "id": 113,
+   "type": "message",
+   "date": "2026-09-25T11:33:28",
+   "date_unixtime": "1790325208",
+   "from": "Kirill Sergeenko",
+   "from_id": "user151522593",
+   "reply_to_message_id": 110,
+   "text": "Да, верно",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Да, верно"
+    }
+   ]
+  },
+  {
+   "id": 114,
+   "type": "message",
+   "date": "2026-09-25T11:59:00",
+   "date_unixtime": "1790326740",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "forwarded_from": "Хакатон Московского транспорта",
+   "forwarded_from_id": "channel4302131599",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    " ",
+    {
+     "type": "bold",
+     "text": "Запись открытия хакатона\n"
+    },
+    "\nУчастники, запись открытия можно посмотреть на ",
+    {
+     "type": "text_link",
+     "text": "сайте хакатона",
+     "href": "https://mt-hackathon.ru/"
+    },
+    "."
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " "
+    },
+    {
+     "type": "bold",
+     "text": "Запись открытия хакатона\n"
+    },
+    {
+     "type": "plain",
+     "text": "\nУчастники, запись открытия можно посмотреть на "
+    },
+    {
+     "type": "text_link",
+     "text": "сайте хакатона",
+     "href": "https://mt-hackathon.ru/"
+    },
+    {
+     "type": "plain",
+     "text": "."
+    }
+   ]
+  },
+  {
+   "id": 115,
+   "type": "service",
+   "date": "2026-09-25T12:49:32",
+   "date_unixtime": "1790329772",
+   "actor": "Антон К",
+   "actor_id": "user984638293",
+   "action": "join_group_by_link",
+   "inviter": "Group",
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 116,
+   "type": "message",
+   "date": "2026-09-25T13:35:34",
+   "date_unixtime": "1790332534",
+   "edited": "2026-09-25T17:04:03",
+   "edited_unixtime": "1790345043",
+   "from": "Поддержка Хакатона MT",
+   "from_id": "user7032298449",
+   "text": [
+    {
+     "type": "bold",
+     "text": "⚡️ QA-сессия по задаче «ИИ-прогноз загрузки трамвайных маршрутов»\n"
+    },
+    "\nКапитаны, ",
+    {
+     "type": "bold",
+     "text": "сегодня в 17:00 МСК состоится QA-сессия"
+    },
+    ", на которой вы сможете напрямую задать вопросы экспертам. \n",
+    {
+     "type": "italic",
+     "text": "Если в ходе изучения материалов у вас возникли вопросы по данным/задаче, дождитесь QA, чтобы эксперты смогли подробно разъяснить голосом.\n"
+    },
+    "\n",
+    {
+     "type": "bold",
+     "text": "📌 Просим вас также продублировать ссылку на подключение сокомандникам.\n"
+    },
+    "\nДо встречи 🙌"
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "⚡️ QA-сессия по задаче «ИИ-прогноз загрузки трамвайных маршрутов»\n"
+    },
+    {
+     "type": "plain",
+     "text": "\nКапитаны, "
+    },
+    {
+     "type": "bold",
+     "text": "сегодня в 17:00 МСК состоится QA-сессия"
+    },
+    {
+     "type": "plain",
+     "text": ", на которой вы сможете напрямую задать вопросы экспертам. \n"
+    },
+    {
+     "type": "italic",
+     "text": "Если в ходе изучения материалов у вас возникли вопросы по данным/задаче, дождитесь QA, чтобы эксперты смогли подробно разъяснить голосом.\n"
+    },
+    {
+     "type": "plain",
+     "text": "\n"
+    },
+    {
+     "type": "bold",
+     "text": "📌 Просим вас также продублировать ссылку на подключение сокомандникам.\n"
+    },
+    {
+     "type": "plain",
+     "text": "\nДо встречи 🙌"
+    }
+   ]
+  },
+  {
+   "id": 117,
+   "type": "message",
+   "date": "2026-09-25T13:37:24",
+   "date_unixtime": "1790332644",
+   "from": "97599 VladT",
+   "from_id": "user5339664084",
+   "reply_to_message_id": 116,
+   "text": "Привет, список вопросов уже готов. Можно ли отправить его организаторам, например через модератора?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Привет, список вопросов уже готов. Можно ли отправить его организаторам, например через модератора?"
+    }
+   ]
+  },
+  {
+   "id": 118,
+   "type": "message",
+   "date": "2026-09-25T13:39:15",
+   "date_unixtime": "1790332755",
+   "from": "Kirill Sergeenko",
+   "from_id": "user151522593",
+   "reply_to_message_id": 117,
+   "text": "да, можно модератору",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "да, можно модератору"
+    }
+   ]
+  },
+  {
+   "id": 119,
+   "type": "message",
+   "date": "2026-09-25T13:39:53",
+   "date_unixtime": "1790332793",
+   "from": "Max Bogus",
+   "from_id": "user178831004",
+   "text": "Приветствую! будет ли у нас пайплайн от организаторов для public проверок наших предсказаний? что бы проверить на пере(недо)обучение? или это не обязательно?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Приветствую! будет ли у нас пайплайн от организаторов для public проверок наших предсказаний? что бы проверить на пере(недо)обучение? или это не обязательно?"
+    }
+   ]
+  },
+  {
+   "id": 120,
+   "type": "message",
+   "date": "2026-09-25T13:48:29",
+   "date_unixtime": "1790333309",
+   "edited": "2026-09-25T13:49:25",
+   "edited_unixtime": "1790333365",
+   "from": "97599 VladT",
+   "from_id": "user5339664084",
+   "reply_to_message_id": 118,
+   "text": "Отправил в личный чат.",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Отправил в личный чат."
+    }
+   ]
+  },
+  {
+   "id": 121,
+   "type": "message",
+   "date": "2026-09-25T14:29:09",
+   "date_unixtime": "1790335749",
+   "edited": "2026-09-25T15:04:37",
+   "edited_unixtime": "1790337877",
+   "from": "Кирилл",
+   "from_id": "user2026506037",
+   "text": "Добрый день! Подскажите, пожалуйста: скор на лидерборде считается по всему ноябрю–декабрю или есть скрытая часть, по которой итог пересчитают после дедлайна? И в зачёт идёт лучший загруженный результат, а не последний? Ещё вопрос: можно ли использовать внешние данные, опубликованные после 31 октября 2025, например фактическую погоду или новости Дептранса?\nЕсли не сложно свяжитель в лс",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Добрый день! Подскажите, пожалуйста: скор на лидерборде считается по всему ноябрю–декабрю или есть скрытая часть, по которой итог пересчитают после дедлайна? И в зачёт идёт лучший загруженный результат, а не последний? Ещё вопрос: можно ли использовать внешние данные, опубликованные после 31 октября 2025, например фактическую погоду или новости Дептранса?\nЕсли не сложно свяжитель в лс"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👌",
+      "recent": [
+       {
+        "from": "Masha",
+        "from_id": "user1116481734",
+        "date": "2026-09-25T15:04:37"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 122,
+   "type": "message",
+   "date": "2026-09-25T14:39:36",
+   "date_unixtime": "1790336376",
+   "edited": "2026-09-25T15:43:31",
+   "edited_unixtime": "1790340211",
+   "from": "97599 VladT",
+   "from_id": "user5339664084",
+   "reply_to_message_id": 118,
+   "text": "Вопросы получили?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Вопросы получили?"
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "👍",
+      "recent": [
+       {
+        "from": "Kirill Sergeenko",
+        "from_id": "user151522593",
+        "date": "2026-09-25T15:43:31"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 124,
+   "type": "message",
+   "date": "2026-09-25T16:48:52",
+   "date_unixtime": "1790344132",
+   "from": "Max Bogus",
+   "from_id": "user178831004",
+   "reply_to_message_id": 121,
+   "text": "А можно нам тоже ответить?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "А можно нам тоже ответить?"
+    }
+   ]
+  },
+  {
+   "id": 125,
+   "type": "message",
+   "date": "2026-09-25T16:50:43",
+   "date_unixtime": "1790344243",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "reply_to_message_id": 121,
+   "text": "1) Скор на лидерборде считается по всему ноябрю–декабрю, скрытой части нет\n2) Лучший за все дни \n3) Да, можно",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "1) Скор на лидерборде считается по всему ноябрю–декабрю, скрытой части нет\n2) Лучший за все дни \n3) Да, можно"
+    }
+   ]
+  },
+  {
+   "id": 126,
+   "type": "message",
+   "date": "2026-09-25T16:55:55",
+   "date_unixtime": "1790344555",
+   "from": "Кирилл",
+   "from_id": "user2026506037",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "sticker.webp",
+   "file_size": 17960,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 11330,
+   "media_type": "sticker",
+   "sticker_emoji": "💪",
+   "mime_type": "image/webp",
+   "width": 512,
+   "height": 512,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 127,
+   "type": "message",
+   "date": "2026-09-25T17:03:26",
+   "date_unixtime": "1790345006",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "text": [
+    {
+     "type": "bold",
+     "text": "Новая ссылка!"
+    },
+    "\n\n",
+    {
+     "type": "text_link",
+     "text": "https://us06web.zoom.us/j/82395558313?pwd=TP8oTbDlTIOOj8XuRgGd29zASaQyXa.1",
+     "href": "https://us06web.zoom.us/j/82395558313?pwd=TP8oTbDlTIOOj8XuRgGd29zASaQyXa.1"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "bold",
+     "text": "Новая ссылка!"
+    },
+    {
+     "type": "plain",
+     "text": "\n\n"
+    },
+    {
+     "type": "text_link",
+     "text": "https://us06web.zoom.us/j/82395558313?pwd=TP8oTbDlTIOOj8XuRgGd29zASaQyXa.1",
+     "href": "https://us06web.zoom.us/j/82395558313?pwd=TP8oTbDlTIOOj8XuRgGd29zASaQyXa.1"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ]
+  },
+  {
+   "id": 128,
+   "type": "message",
+   "date": "2026-09-25T17:06:59",
+   "date_unixtime": "1790345219",
+   "from": "97599 VladT",
+   "from_id": "user5339664084",
+   "reply_to_message_id": 116,
+   "text": "Ссылка на QA сессию?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Ссылка на QA сессию?"
+    }
+   ]
+  },
+  {
+   "id": 129,
+   "type": "message",
+   "date": "2026-09-25T17:07:22",
+   "date_unixtime": "1790345242",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "reply_to_message_id": 127,
+   "text": "Новая ссылка на QA-сессию",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Новая ссылка на QA-сессию"
+    }
+   ]
+  },
+  {
+   "id": 131,
+   "type": "message",
+   "date": "2026-09-25T18:50:08",
+   "date_unixtime": "1790351408",
+   "edited": "2026-09-25T19:25:25",
+   "edited_unixtime": "1790353525",
+   "from": "Masha",
+   "from_id": "user1116481734",
+   "file": "(File not included. Change data exporting settings to download.)",
+   "file_name": "QA_сессия_по_задаче_«ИИ_прогноз_загрузки_трамвайных_маршрутов».mp4",
+   "file_size": 98683685,
+   "thumbnail": "(File not included. Change data exporting settings to download.)",
+   "thumbnail_file_size": 6848,
+   "mime_type": "video/mp4",
+   "text": [
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    " Направляем запись ",
+    {
+     "type": "bold",
+     "text": "Q&A-сессии"
+    },
+    ""
+   ],
+   "text_entities": [
+    {
+     "type": "custom_emoji",
+     "text": "📌",
+     "document_id": ""
+    },
+    {
+     "type": "plain",
+     "text": " Направляем запись "
+    },
+    {
+     "type": "bold",
+     "text": "Q&A-сессии"
+    },
+    {
+     "type": "plain",
+     "text": ""
+    }
+   ],
+   "reactions": [
+     {
+      "type": "emoji",
+      "count": 1,
+      "emoji": "🔥",
+      "recent": [
+       {
+        "from": "Alfred Vardazarian",
+        "from_id": "user414908437",
+        "date": "2026-09-25T19:25:25"
+       }
+      ]
+     }
+    ]
+  },
+  {
+   "id": 133,
+   "type": "message",
+   "date": "2026-09-25T19:08:21",
+   "date_unixtime": "1790352501",
+   "edited": "2026-09-25T19:08:38",
+   "edited_unixtime": "1790352518",
+   "from": "Даниил (nes)",
+   "from_id": "user135821388",
+   "text": "а что по итогу решили с 5-м маршрутом? мы при сабмите отправляем просто нули? не включаем этот маршрут в сабмит вообще? или прогнозируем для него фантастические числа?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "а что по итогу решили с 5-м маршрутом? мы при сабмите отправляем просто нули? не включаем этот маршрут в сабмит вообще? или прогнозируем для него фантастические числа?"
+    }
+   ]
+  },
+  {
+   "id": 134,
+   "type": "service",
+   "date": "2026-09-25T19:19:32",
+   "date_unixtime": "1790353172",
+   "actor": "Masha",
+   "actor_id": "user1116481734",
+   "action": "pin_message",
+   "message_id": 131,
+   "text": "",
+   "text_entities": []
+  },
+  {
+   "id": 135,
+   "type": "message",
+   "date": "2026-09-25T20:01:32",
+   "date_unixtime": "1790355692",
+   "from": "Kirill Sergeenko",
+   "from_id": "user151522593",
+   "reply_to_message_id": 133,
+   "text": "5 маршрут действительно ошибочный, но так или иначе должен быть указан в сабмите - все как в тестовом сабмите в вашем датасете. Вы можете как создавать виртуальные прогнозы, так и заполнить нулями - это практически не повлияет на итоговую метрику (~0.006)",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "5 маршрут действительно ошибочный, но так или иначе должен быть указан в сабмите - все как в тестовом сабмите в вашем датасете. Вы можете как создавать виртуальные прогнозы, так и заполнить нулями - это практически не повлияет на итоговую метрику (~0.006)"
+    }
+   ]
+  },
+  {
+   "id": 136,
+   "type": "message",
+   "date": "2026-09-25T20:05:32",
+   "date_unixtime": "1790355932",
+   "from": "Даниил (nes)",
+   "from_id": "user135821388",
+   "reply_to_message_id": 135,
+   "text": "благодарю за ответ!\nт.е. при любом преодолении порога в 0.88 (вне зависимости от дальнейшей точности) мы уже считаем, что решения всех участников достаточно хороши по качеству ежесуточного прогноза? скор не станет критерием для ранжирования участников между друг другом при одинаковом кол-ве баллов за решение?",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "благодарю за ответ!\nт.е. при любом преодолении порога в 0.88 (вне зависимости от дальнейшей точности) мы уже считаем, что решения всех участников достаточно хороши по качеству ежесуточного прогноза? скор не станет критерием для ранжирования участников между друг другом при одинаковом кол-ве баллов за решение?"
+    }
+   ]
+  },
+  {
+   "id": 137,
+   "type": "message",
+   "date": "2026-09-25T20:37:22",
+   "date_unixtime": "1790357842",
+   "from": "Kirill Sergeenko",
+   "from_id": "user151522593",
+   "reply_to_message_id": 136,
+   "text": "Скор - это также один из инструментов, полное выставление нулей в по предикту в 5 маршруте - это потеря менее 1 пункта по метрике (то есть с выставлением 5 маршрута в ноль максимальная достижимая точность - 0.9935)\n\nУ вас сабмит ровно того формата и тех таймстемпов, которые вам нужно отправить, поэтому метрика остается полностью валидной",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "Скор - это также один из инструментов, полное выставление нулей в по предикту в 5 маршруте - это потеря менее 1 пункта по метрике (то есть с выставлением 5 маршрута в ноль максимальная достижимая точность - 0.9935)\n\nУ вас сабмит ровно того формата и тех таймстемпов, которые вам нужно отправить, поэтому метрика остается полностью валидной"
+    }
+   ]
+  },
+  {
+   "id": 138,
+   "type": "message",
+   "date": "2026-09-25T20:38:42",
+   "date_unixtime": "1790357922",
+   "from": "Даниил (nes)",
+   "from_id": "user135821388",
+   "reply_to_message_id": 137,
+   "text": "тут вопрос уже относительно оторванный от 5го маршрута был 😅\nсам он да, я понял, картину сильно не меняет",
+   "text_entities": [
+    {
+     "type": "plain",
+     "text": "тут вопрос уже относительно оторванный от 5го маршрута был 😅\nсам он да, я понял, картину сильно не меняет"
+    }
+   ]
+  }
+ ]
+}
