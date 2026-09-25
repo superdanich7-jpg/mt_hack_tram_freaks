@@ -1,0 +1,50 @@
+{
+  "features": [
+    "route",
+    "hour",
+    "dow",
+    "is_weekend",
+    "is_official_holiday",
+    "is_preholiday",
+    "days_to_holiday",
+    "days_after_holiday",
+    "hist_rh_med",
+    "hist_rh_mean",
+    "hist_rhd_med",
+    "hist_rhd_mean",
+    "hist_rd_med",
+    "hist_rd_mean",
+    "hist_r_mean",
+    "hist_r_std",
+    "hist_rhe_mean",
+    "recent_rhd_med",
+    "recent_rh_med",
+    "recent_rh_mean",
+    "trend_ratio",
+    "temperature_2m",
+    "precipitation",
+    "snowfall",
+    "snow_depth",
+    "wind_speed_10m",
+    "cloud_cover",
+    "relative_humidity_2m"
+  ],
+  "n_features": 28,
+  "n_rounds": 846,
+  "use_weather": true,
+  "recent_weeks": 8,
+  "exclude": [
+    "month",
+    "dayofyear",
+    "weekofyear",
+    "day"
+  ],
+  "train_period": [
+    "2025-01-01",
+    "2025-10-31"
+  ],
+  "forecast_period": [
+    "2025-11-01",
+    "2025-12-31"
+  ]
+}
