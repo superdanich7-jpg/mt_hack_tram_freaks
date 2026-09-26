@@ -294,6 +294,66 @@ def test_extra_features_ignore_future(extra_feats: pd.DataFrame) -> None:
     pd.testing.assert_frame_equal(a, b)
 
 
+def test_no_feature_leaves_training_range(extra_feats: pd.DataFrame) -> None:
+    """
+    Ни один признак финальной модели не выходит за диапазон обучения.
+
+    Регрессия после падения 0.87597 -> 0.83831 на платформе: daylight_hours
+    добавлен в extra_external как «открытые данные», но это монотонная
+    функция dayofyear, то есть ровно тот сезонный календарный признак,
+    который проект осознанно исключил (SEASONAL_EXCLUDE). В декабре световой
+    день падает ниже минимума обучения (7.00 против 7.13 ч), деревья не
+    умеют экстраполировать и залипают на январском листе.
+
+    Проверка ловит эту ошибку классом до отправки на платформу.
+    """
+    from src import config as cfg
+    from src.data import load_and_prepare
+    from src.predict import build_forecast_grid
+
+    cutoff = pd.Timestamp("2025-11-01")
+    cols = get_feature_columns(
+        use_weather=True,
+        exclude=("month", "dayofyear", "weekofyear", "day"),
+        extra=cfg.FINAL_EXTRA_GROUPS,
+    )
+    # Матрица строится ровно так же, как в src/predict.py: история плюс
+    # пустая сетка будущего, cutoff = начало прогноза. Иначе агрегаты
+    # истории видят не тот период, что видела модель при обучении.
+    full = pd.concat(
+        [load_and_prepare(), build_forecast_grid()], ignore_index=True
+    )
+    full["date"] = pd.to_datetime(full["date"])
+    feats = make_features(
+        full, cutoff=cutoff, use_weather=True, recent_weeks=8, extra=cfg.FINAL_EXTRA_GROUPS
+    )
+    train = feats[feats["date"] < cutoff]
+    future = feats[
+        (feats["date"] >= cutoff) & (feats["date"] < "2025-12-31")
+    ]
+    assert len(future) > 0, "нет будущих строк для проверки"
+
+    offenders: list[tuple[str, float]] = []
+    for col in cols:
+        tr = train[col].dropna()
+        # route=5 отсутствует в labels, поэтому его признаки заполнены
+        # нулями и формально «вне диапазона». Это не проблема
+        # экстраполяции, а особенность битого маршрута - исключаем.
+        fu = future[future["route"] != 5][col].dropna()
+        if tr.empty or fu.empty:
+            continue
+        n_out = int(((fu < tr.min()) | (fu > tr.max())).sum())
+        # Порог 20%: ловит массовый выход вроде daylight_hours (34% дней),
+        # но пропускает редкие выбросы вроде usd_rub (6 дней из 61).
+        if n_out / len(fu) > 0.20:
+            offenders.append((col, n_out / len(fu)))
+
+    assert not offenders, (
+        "признаки выходят за обучающий диапазон более чем на 20% дней "
+        f"прогноза: {offenders}"
+    )
+
+
 def test_lstm_training_targets_end_before_cutoff() -> None:
     """Цели обучающей выборки LSTM заканчиваются строго ДО cutoff (нет утечки)."""
     from src.nn_models import _build_examples, build_training_set
