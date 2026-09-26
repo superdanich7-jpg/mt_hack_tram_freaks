@@ -1,0 +1,24 @@
+# Порядок правил ВАЖЕН: последнее совпадение выигрывает. Поэтому
+# бинарные расширения объявлены ПОСЛЕ текстовых, иначе *.txt ниже
+# перебьёт models/*.txt -text и вернёт CRLF-конверсию модели.
+*.csv text eol=lf
+*.py text eol=lf
+*.md text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf
+
+# Модели LightGBM - не текст, а позиционный бинарный формат.
+# Без этого правила core.autocrlf=true на Windows конвертирует LF в CRLF
+# при checkout, и Booster(model_file=...) падает с
+# "Model format error, expect a tree here".
+models/*.txt -text
+models/*.bin -text
+models/*.pkl -text
+
+# Прочие бинарные артефакты
+*.parquet -text
+*.xlsx -text
+*.xls -text
+*.csv.gz -text
+*.pyc -text
