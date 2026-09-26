@@ -87,6 +87,9 @@ CATEGORICAL_FEATURES: list[str] = ["route", "dow", "hour"]
 # Включение по-умолчанию пустое, чтобы конфигурация v2 осталась воспроизводимой.
 # Все новые агрегаты считаются ИСКЛЮЧИТЕЛЬНО по строкам date < cutoff.
 # ---------------------------------------------------------------------------
+# Лаг трендовых окон: агрегаты заканчиваются за 7 дней до cutoff.
+TREND_LAG_DAYS: int = 7
+
 EXTRA_GROUPS: dict[str, list[str]] = {
     # Циклическое кодирование (альтернатива категориальным hour/dow)
     "cyclical": ["hour_sin", "hour_cos", "dow_sin", "dow_cos"],
@@ -111,6 +114,29 @@ EXTRA_GROUPS: dict[str, list[str]] = {
     "hdd": ["hdd_24h", "hdd_72h", "hdd_168h"],
     # Макро-ряды: нефть и курс доллара
     "macro": ["brent", "usd_rub"],
+    # Тренд и рост: направление изменения уровня маршрута.
+    # С лагом: окна заканчиваются за lag_days до cutoff. Последняя неделя
+    # перед ноябрём может быть аномальной (праздники, ремонт, погода), и
+    # направление роста тогда оказывается ложным. Без лага группа
+    # ухудшала помесячный бэктест (+0.0008, лучше 4 месяца из 7).
+    "trend": [
+        "route_level_recent",
+        "route_level_prev",
+        "growth_2w",
+        "growth_vs_hist",
+        "slope_week",
+        "growth_vol",
+    ],
+    # Тренд с лагом 7 дней - устойчивое направление роста.
+    "trend_lag": [
+        "route_level_recent_lag",
+        "route_level_prev_lag",
+        "growth_2w_lag",
+        "growth_vs_hist_lag",
+        "slope_week_lag",
+    ],
+    # Только направление тренда, без уровней: минимальный вариант.
+    "trend_slope": ["slope_week_lag", "growth_vs_hist_lag"],
     # Все дополнительные внешние источники сразу
     "extra_external": [
         "daylight_hours",
@@ -605,6 +631,141 @@ def _add_heating_degree_days(df: pd.DataFrame) -> pd.DataFrame:
     return out.drop(columns=["_hdd"]).reindex(df.index)
 
 
+def _trend_aggregates(
+    df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int, lag_days: int
+) -> pd.DataFrame:
+    """
+    Агрегаты «уровень и рост» по каждому маршруту.
+
+    Все окна заканчиваются за lag_days до cutoff. Лаг нужен потому, что
+    последняя неделя перед ноябрём может быть аномальной, и без лага
+    направление роста оказывается ложным: группа без лага ухудшала
+    помесячный бэктест (+0.0008, лучше только 4 месяца из 7).
+    Всё считается по датам строго раньше cutoff.
+    """
+    end = cutoff - pd.Timedelta(days=lag_days)
+    hist = df[df["date"] < end]
+    daily = hist.groupby(["route", "date"])["boardings"].sum().reset_index()
+
+    recent_start = end - pd.Timedelta(weeks=recent_weeks)
+    prev_start = end - pd.Timedelta(weeks=2 * recent_weeks)
+
+    daily["bucket"] = np.select(
+        [daily["date"] >= recent_start, daily["date"] >= prev_start],
+        ["recent", "prev"],
+        default="older",
+    )
+
+    piv = daily.pivot_table(
+        index="route", columns="bucket", values="boardings", aggfunc="median"
+    )
+    piv.columns = [f"route_level_{c}" for c in piv.columns]
+    piv = piv.reindex(columns=["route_level_recent", "route_level_prev"])
+    piv["route_level_hist"] = daily.groupby("route")["boardings"].median()
+    piv["route_level_hist"] = piv["route_level_hist"].reindex(piv.index)
+
+    # Недельные суммы за последние 12 недель: наклон и волатильность роста
+    weekly = (
+        daily[daily["date"] >= end - pd.Timedelta(weeks=12)]
+        .assign(
+            w=lambda d: d["date"].dt.isocalendar().week.astype(int) * 100
+            + d["date"].dt.isocalendar().day.astype(int)
+        )
+        .groupby(["route", "w"])["boardings"]
+        .sum()
+        .reset_index()
+        .sort_values(["route", "w"])
+    )
+    weekly["t"] = weekly.groupby("route").cumcount().astype(float)
+    weekly["pct"] = weekly.groupby("route")["boardings"].pct_change()
+    # pct_change даёт ±inf, если предыдущая неделя равна нулю (ночные часы
+    # слабого маршрута). Такой прирост не имеет смысла, поэтому убираем его.
+    weekly["pct"] = weekly["pct"].replace([np.inf, -np.inf], np.nan)
+
+    def _slope(s: pd.DataFrame) -> float:
+        t = s["t"].to_numpy(dtype=float)
+        y = s["boardings"].to_numpy(dtype=float)
+        denom = ((t - t.mean()) ** 2).sum()
+        lvl = y.mean()
+        if len(y) < 4 or denom <= 0 or lvl <= 0:
+            return 0.0
+        return float((t - t.mean()).dot(y - y.mean()) / denom / lvl * 7.0)
+
+    piv["slope_week"] = weekly.groupby("route").apply(
+        _slope, include_groups=False
+    ).reindex(piv.index)
+    piv["growth_vol"] = (
+        weekly.groupby("route")["pct"]
+        .apply(lambda s: float(s.tail(10).std()))
+        .reindex(piv.index)
+    )
+    return piv.reset_index()
+
+
+def _finalize_trend(out: pd.DataFrame) -> pd.DataFrame:
+    """Расчёт приростов из уровней и заполнение пропусков."""
+    out["growth_2w"] = np.where(
+        out["route_level_prev"] > 0,
+        out["route_level_recent"] / out["route_level_prev"] - 1.0,
+        0.0,
+    ).clip(-0.6, 0.6)
+    out["growth_vs_hist"] = np.where(
+        out["route_level_hist"] > 0,
+        out["route_level_recent"] / out["route_level_hist"] - 1.0,
+        0.0,
+    ).clip(-0.6, 0.6)
+    for col in ("route_level_recent", "route_level_prev", "growth_vol"):
+        if col in out.columns:
+            out[col] = out[col].fillna(0.0)
+    out["slope_week"] = out["slope_week"].fillna(0.0).clip(-0.3, 0.3)
+    return out.drop(columns=["route_level_hist"])
+
+
+def _add_trend_features(
+    df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int
+) -> pd.DataFrame:
+    """Тренд и рост без лага: окна заканчиваются ровно на cutoff."""
+    out = _merge_keep_keys(
+        df, _trend_aggregates(df, cutoff, recent_weeks, lag_days=0), ["route"]
+    )
+    return _finalize_trend(out)
+
+
+def _add_trend_features_lag(
+    df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int
+) -> pd.DataFrame:
+    """
+    Тренд и рост с лагом в 7 дней.
+
+    Все колонки получают суффикс _lag: группы trend и trend_lag могут быть
+    включены одновременно, а одноимённые колонки иначе конфликтуют при merge
+    и превращаются в slope_week_x / slope_week_y.
+    """
+    agg = _trend_aggregates(df, cutoff, recent_weeks, lag_days=TREND_LAG_DAYS)
+    agg = agg.rename(
+        columns={
+            c: c if c == "route" else f"{c}_lag"
+            for c in agg.columns
+            if c != "route"
+        }
+    )
+    out = _merge_keep_keys(df, agg, ["route"])
+    out["growth_2w_lag"] = np.where(
+        out["route_level_prev_lag"] > 0,
+        out["route_level_recent_lag"] / out["route_level_prev_lag"] - 1.0,
+        0.0,
+    ).clip(-0.6, 0.6)
+    out["growth_vs_hist_lag"] = np.where(
+        out["route_level_hist_lag"] > 0,
+        out["route_level_recent_lag"] / out["route_level_hist_lag"] - 1.0,
+        0.0,
+    ).clip(-0.6, 0.6)
+    for col in ("route_level_recent_lag", "route_level_prev_lag", "growth_vol_lag"):
+        out[col] = out[col].fillna(0.0)
+    out["slope_week_lag"] = out["slope_week_lag"].fillna(0.0).clip(-0.3, 0.3)
+    return out.drop(columns=["route_level_hist_lag"])
+
+
 def _add_extra_features(
     df: pd.DataFrame, cutoff: pd.Timestamp, extra: tuple[str, ...], recent_weeks: int
 ) -> pd.DataFrame:
@@ -633,6 +794,10 @@ def _add_extra_features(
             )
     if "hdd" in extra or "extra_external" in extra:
         df = _add_heating_degree_days(df)
+    if "trend" in extra:
+        df = _add_trend_features(df, cutoff, recent_weeks)
+    if "trend_lag" in extra or "trend_slope" in extra:
+        df = _add_trend_features_lag(df, cutoff, recent_weeks)
     return df
 
 
