@@ -42,6 +42,7 @@ def build_datasets(
     valid_start: str = cfg.VALID_START,
     valid_end: str | None = None,
     recent_weeks: int = cfg.RECENT_WEEKS,
+    extra: tuple[str, ...] = (),
 ):
     """Готовит train/valid матрицы признаков без утечки из будущего."""
     if use_weather and not weather_available():
@@ -53,9 +54,10 @@ def build_datasets(
 
     df = load_and_prepare()
     feats = make_features(
-        df, cutoff=valid_start, use_weather=use_weather, recent_weeks=recent_weeks
+        df, cutoff=valid_start, use_weather=use_weather,
+        recent_weeks=recent_weeks, extra=extra,
     )
-    cols = get_feature_columns(use_weather=use_weather, exclude=exclude)
+    cols = get_feature_columns(use_weather=use_weather, exclude=exclude, extra=extra)
 
     train_mask = feats["date"] < valid_start
     if valid_end is not None:
@@ -100,6 +102,7 @@ def run_training(
     valid_end: str | None = None,
     save: bool = True,
     recent_weeks: int = cfg.RECENT_WEEKS,
+    extra: tuple[str, ...] = (),
 ) -> dict:
     """Полный цикл: подготовка -> обучение -> метрики -> сохранение модели."""
     feats, X_train, y_train, X_valid, y_valid, cols = build_datasets(
@@ -108,6 +111,7 @@ def run_training(
         valid_start=valid_start,
         valid_end=valid_end,
         recent_weeks=recent_weeks,
+        extra=extra,
     )
     model = train_lgbm(X_train, y_train, X_valid, y_valid, params=params)
 

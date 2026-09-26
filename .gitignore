@@ -18,10 +18,16 @@ models/*.txt
 models/*.pkl
 *.lgb
 *.cbm
+models/preds/
+
+# Служебные каталоги CatBoost / Optuna
+catboost_info/
 
 # Кэш метрик обучения
 reports/metrics_*.json
 reports/ensemble_*.json
+reports/v3/*.json
+reports/optuna/
 
 # Среда
 .venv/

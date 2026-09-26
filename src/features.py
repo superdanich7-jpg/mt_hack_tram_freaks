@@ -19,6 +19,15 @@ HOLIDAYS_CSV_PATH: Path = Path("data/external/holidays.csv")
 # Длина "свежего" окна для оценки тренда уровня (в неделях)
 RECENT_WEEKS: int = 4
 
+# Константы для V3-признаков (см. ai/CONVENTIONS.md — никаких магических чисел)
+HOURS_IN_DAY: int = 24
+DAYS_IN_WEEK: int = 7
+PRECIP_WINDOW_6H: int = 6
+PRECIP_WINDOW_12H: int = 12
+PRECIP_WINDOW_24H: int = 24
+PRECIP_THRESHOLD_MM: float = 0.1
+WIND_KMH_TO_MS: float = 3.6
+
 WEATHER_COLS: list[str] = [
     "temperature_2m",
     "precipitation",
@@ -66,6 +75,34 @@ FEATURE_COLS: list[str] = FEATURE_COLS_BASE + WEATHER_COLS
 # Категориальные признаки для LightGBM
 CATEGORICAL_FEATURES: list[str] = ["route", "dow", "hour"]
 
+# ---------------------------------------------------------------------------
+# V3: дополнительные группы признаков (включаются точечно через `extra=...`).
+# Включение по-умолчанию пустое, чтобы конфигурация v2 осталась воспроизводимой.
+# Все новые агрегаты считаются ИСКЛЮЧИТЕЛЬНО по строкам date < cutoff.
+# ---------------------------------------------------------------------------
+EXTRA_GROUPS: dict[str, list[str]] = {
+    # Циклическое кодирование (альтернатива категориальным hour/dow)
+    "cyclical": ["hour_sin", "hour_cos", "dow_sin", "dow_cos"],
+    # Производные погодные признаки: ощущаемая температура и накопленные осадки
+    "weather_derived": [
+        "apparent_temperature",
+        "precip_6h",
+        "precip_12h",
+        "precip_24h",
+        "snow_24h",
+        "is_precipitation",
+    ],
+    # «Профиль дня»: доля часа в суточном объёте маршрута + ожидаемое значение
+    "profile": ["profile_share", "profile_pred", "dow_level_ratio"],
+    # Волатильность спроса внутри ячейки и между днями
+    "volatility": ["hist_rhd_std", "hist_rhd_cv", "day_cv", "day_cv_recent"],
+    # Перекрёстные (cross-route) признаки: активность города целиком
+    "cross_route": ["city_hd_med", "route_share_hd", "city_trend_ratio"],
+}
+
+EXTRA_ALL: tuple[str, ...] = tuple(EXTRA_GROUPS)
+
+
 
 def load_weather(path: str | Path = WEATHER_CSV_PATH) -> pd.DataFrame:
     """Загрузка кэшированных погодных данных."""
@@ -96,6 +133,7 @@ def get_feature_columns(
     use_weather: bool = True,
     exclude: tuple[str, ...] = (),
     include: tuple[str, ...] = (),
+    extra: tuple[str, ...] = (),
 ) -> list[str]:
     """
     Возвращает список колонок-признаков для модели.
@@ -104,8 +142,13 @@ def get_feature_columns(
     :param exclude: признаки, которые нужно исключить (для абляций).
     :param include: дополнительные признаки, которые нужно включить
         (например, погодные при use_weather=False).
+    :param extra: подключённые группы признаков V3 (см. EXTRA_GROUPS).
     """
     base = list(FEATURE_COLS) if use_weather else list(FEATURE_COLS_BASE)
+    for group in extra:
+        if group not in EXTRA_GROUPS:
+            raise KeyError(f"Неизвестная группа признаков: {group}")
+        base.extend(EXTRA_GROUPS[group])
     for col in include:
         if col not in base:
             base.append(col)
@@ -234,6 +277,235 @@ def _add_history_features(
     df["hist_r_std"] = df["hist_r_std"].fillna(0.0)
     return df
 
+# ---------------------------------------------------------------------------
+# V3: дополнительные группы признаков (все — строго по строкам date < cutoff)
+# ---------------------------------------------------------------------------
+
+def _merge_keep_keys(df: pd.DataFrame, right: pd.DataFrame, keys: list[str]) -> pd.DataFrame:
+    """Left-merge без конфликта имён ключей (pandas иначе плодит dow_x/dow_y)."""
+    renames = {k: f"{k}__key" for k in keys}
+    return (
+        df.merge(
+            right.rename(columns=renames),
+            left_on=keys,
+            right_on=[renames[k] for k in keys],
+            how="left",
+        ).drop(columns=list(renames.values()))
+    )
+
+
+def _add_cyclical_features(df: pd.DataFrame) -> pd.DataFrame:
+    """Синус/косинус кодирование суточного и недельного циклов."""
+    df["hour_sin"] = np.sin(2 * np.pi * df["hour"] / HOURS_IN_DAY)
+    df["hour_cos"] = np.cos(2 * np.pi * df["hour"] / HOURS_IN_DAY)
+    df["dow_sin"] = np.sin(2 * np.pi * df["dow"] / DAYS_IN_WEEK)
+    df["dow_cos"] = np.cos(2 * np.pi * df["dow"] / DAYS_IN_WEEK)
+    return df
+
+
+def _add_weather_derived(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Производные погодные признаки: ощущаемая температура (формула Стедмана)
+    и накопленные осадки/снег за 6/12/24 часа.
+
+    Окна скользят «назад» по времени (включая текущий час) — утечки target нет.
+    """
+    if "temperature_2m" not in df.columns:
+        return df
+
+    temp = df["temperature_2m"].astype(float)
+    hum = df["relative_humidity_2m"].astype(float).clip(1.0, 100.0)
+    wind_kmh = df["wind_speed_10m"].astype(float)
+
+    e_sat = 6.105 * np.exp(17.27 * temp / (237.7 + temp))  # давление насыщения, гПа
+    df["apparent_temperature"] = (
+        temp + 0.33 * (hum / 100.0) * e_sat - 0.70 * (wind_kmh / WIND_KMH_TO_MS) - 4.00
+    )
+
+    acc = df[["route", "date", "hour", "precipitation", "snowfall"]].sort_values(
+        ["route", "date", "hour"]
+    )
+    grp = acc.groupby("route")
+    acc["precip_6h"] = grp["precipitation"].transform(
+        lambda s: s.rolling(PRECIP_WINDOW_6H, min_periods=1).sum()
+    )
+    acc["precip_12h"] = grp["precipitation"].transform(
+        lambda s: s.rolling(PRECIP_WINDOW_12H, min_periods=1).sum()
+    )
+    acc["precip_24h"] = grp["precipitation"].transform(
+        lambda s: s.rolling(PRECIP_WINDOW_24H, min_periods=1).sum()
+    )
+    acc["snow_24h"] = grp["snowfall"].transform(
+        lambda s: s.rolling(PRECIP_WINDOW_24H, min_periods=1).sum()
+    )
+    acc = acc.drop(columns=["precipitation", "snowfall"])
+
+    df = df.merge(acc, on=["route", "date", "hour"], how="left")
+    for col in ("precip_6h", "precip_12h", "precip_24h", "snow_24h"):
+        df[col] = df[col].fillna(0.0)
+    df["is_precipitation"] = (df["precip_24h"] > PRECIP_THRESHOLD_MM).astype("int32")
+    return df
+def _add_profile_features(df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int) -> pd.DataFrame:
+    """
+    «Профиль дня»: какая доля суточного объёма маршрута приходится на час
+    (route x dow x hour), и ожидаемое значение = доля x свежий уровень дня.
+
+    Доля нормируется на суточный итог, поэтому устойчива к общему дрейфу уровня;
+    сам дрейф приходит в profile_pred через свежий уровень.
+    """
+    hist = df[df["date"] < cutoff]
+    day_tot = (
+        hist.groupby(["route", "date"])["boardings"]
+        .sum()
+        .rename("day_tot")
+        .reset_index()
+    )
+    hist_p = hist.merge(day_tot, on=["route", "date"], how="left")
+    hist_p = hist_p[hist_p["day_tot"] > 0]
+
+    hist_p["share"] = hist_p["boardings"] / hist_p["day_tot"]
+    share_rhd = (
+        hist_p.groupby(["route", "dow", "hour"])["share"]
+        .mean()
+        .rename("profile_share")
+        .reset_index()
+    )
+
+    recent_start = cutoff - pd.Timedelta(weeks=recent_weeks)
+    recent = hist[hist["date"] >= recent_start]
+    if recent.empty:
+        recent = hist
+    recent_rd = (
+        recent.groupby(["route", "dow"])["boardings"]
+        .mean()
+        .rename("recent_rd_mean")
+        .reset_index()
+    )
+    recent_r = (
+        recent.groupby("route")["boardings"].mean().rename("recent_r_mean").reset_index()
+    )
+
+    df = _merge_keep_keys(df, share_rhd, ["route", "dow", "hour"])
+    df = _merge_keep_keys(df, recent_rd, ["route", "dow"])
+    df = _merge_keep_keys(df, recent_r, ["route"])
+
+    df["profile_share"] = df["profile_share"].fillna(1.0 / (HOURS_IN_DAY * DAYS_IN_WEEK))
+    df["profile_pred"] = df["profile_share"] * df["recent_rd_mean"] * HOURS_IN_DAY
+    df["dow_level_ratio"] = np.where(
+        df["recent_r_mean"] > 0, df["recent_rd_mean"] / df["recent_r_mean"], 1.0
+    ).clip(0.2, 5.0)
+
+    return df.drop(columns=["recent_rd_mean", "recent_r_mean"])
+
+
+def _add_volatility_features(df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int) -> pd.DataFrame:
+    """Волатильность спроса внутри ячейки route x hour x dow и между днями."""
+    hist = df[df["date"] < cutoff]
+
+    rhd = (
+        hist.groupby(["route", "hour", "dow"])["boardings"]
+        .agg(hist_rhd_std="std", hist_rhd_mean="mean")
+        .reset_index()
+    )
+    rhd["hist_rhd_cv"] = (rhd["hist_rhd_std"] / (rhd["hist_rhd_mean"] + 1.0)).clip(0, 5.0)
+    rhd = rhd.drop(columns=["hist_rhd_mean"])
+
+    day_tot = hist.groupby(["route", "date"])["boardings"].sum().rename("day_tot").reset_index()
+    day_cv = (
+        day_tot.groupby("route")["day_tot"]
+        .apply(lambda s: float(s.std()) / (float(s.mean()) + 1.0))
+        .clip(0, 5.0)
+        .rename("day_cv")
+        .reset_index()
+    )
+    recent_start = cutoff - pd.Timedelta(weeks=recent_weeks)
+    day_cv_recent = (
+        day_tot[day_tot["date"] >= recent_start]
+        .groupby("route")["day_tot"]
+        .apply(lambda s: float(s.std()) / (float(s.mean()) + 1.0))
+        .clip(0, 5.0)
+        .rename("day_cv_recent")
+        .reset_index()
+    )
+
+    df = _merge_keep_keys(df, rhd, ["route", "hour", "dow"])
+    df = _merge_keep_keys(df, day_cv, ["route"])
+    df = _merge_keep_keys(df, day_cv_recent, ["route"])
+
+    for col in ("hist_rhd_std", "hist_rhd_cv", "day_cv", "day_cv_recent"):
+        df[col] = df[col].fillna(0.0)
+    return df
+
+
+def _add_cross_route_features(
+    df: pd.DataFrame, cutoff: pd.Timestamp, recent_weeks: int
+) -> pd.DataFrame:
+    """
+    Перекрёстные признаки: суммарная активность всех известных маршрутов города.
+
+    city_hd_med — медианный поток по (час, день недели) сразу по всем маршрутам;
+    работает как общий «индикатор дня» (праздник, аномальная погода), который
+    дерево не может вывести из признаков одного маршрута.
+    city_trend_ratio — дрейф уровня города: свежее окно / вся история.
+    """
+    hist = df[df["date"] < cutoff]
+    city_dh = (
+        hist.groupby(["date", "hour"])["boardings"].sum().rename("city_boardings").reset_index()
+    )
+    city_dh["dow"] = city_dh["date"].dt.dayofweek.astype("int32")
+
+    city_hd = (
+        city_dh.groupby(["hour", "dow"])["city_boardings"]
+        .median()
+        .rename("city_hd_med")
+        .reset_index()
+    )
+    city_total_hd = (
+        city_dh.groupby(["hour", "dow"])["city_boardings"]
+        .mean()
+        .rename("city_hd_mean")
+        .reset_index()
+    )
+    route_hd = (
+        hist.groupby(["route", "hour", "dow"])["boardings"].mean().rename("route_hd_mean").reset_index()
+    )
+    share = route_hd.merge(city_total_hd, on=["hour", "dow"], how="left")
+    share["route_share_hd"] = (share["route_hd_mean"] / (share["city_hd_mean"] + 1.0)).clip(0, 1.0)
+    share = share.drop(columns=["route_hd_mean"])
+
+    recent_start = cutoff - pd.Timedelta(weeks=recent_weeks)
+    hist_mean = float(city_dh["city_boardings"].mean())
+    recent_mean = float(city_dh[city_dh["date"] >= recent_start]["city_boardings"].mean())
+    trend = recent_mean / hist_mean if hist_mean > 0 else 1.0
+
+    df = _merge_keep_keys(df, city_hd, ["hour", "dow"])
+    df = _merge_keep_keys(df, share, ["route", "hour", "dow"])
+    df["city_hd_med"] = df["city_hd_med"].fillna(0.0)
+    df["route_share_hd"] = df["route_share_hd"].fillna(0.0)
+    df["city_trend_ratio"] = float(np.clip(trend, 0.3, 3.0))
+    return df
+
+
+def _add_extra_features(
+    df: pd.DataFrame, cutoff: pd.Timestamp, extra: tuple[str, ...], recent_weeks: int
+) -> pd.DataFrame:
+    """Добавление выбранных групп признаков V3."""
+    if "cyclical" in extra:
+        df = _add_cyclical_features(df)
+    if "weather_derived" in extra:
+        df = _add_weather_derived(df)
+    if "profile" in extra:
+        df = _add_profile_features(df, cutoff, recent_weeks)
+    if "volatility" in extra:
+        df = _add_volatility_features(df, cutoff, recent_weeks)
+    if "cross_route" in extra:
+        df = _add_cross_route_features(df, cutoff, recent_weeks)
+    return df
+
+
+
+
+
 
 def make_features(
     df: pd.DataFrame,
@@ -241,6 +513,7 @@ def make_features(
     use_weather: bool = True,
     use_holidays: bool = True,
     recent_weeks: int = RECENT_WEEKS,
+    extra: tuple[str, ...] = (),
 ) -> pd.DataFrame:
     """
     Построение полного набора признаков.
@@ -252,6 +525,7 @@ def make_features(
     :param use_weather: подключать ли погодные признаки.
     :param use_holidays: подключать ли признаки праздников.
     :param recent_weeks: длина «свежего» окна для оценки уровня (недели).
+    :param extra: подключаемые группы признаков V3 (см. EXTRA_GROUPS).
     :return: DataFrame с добавленными признаками (строка к строке).
     """
     cutoff = pd.Timestamp(cutoff)
@@ -265,6 +539,7 @@ def make_features(
     out = _add_external_features(out, weather, holidays)
 
     out = _add_history_features(out, cutoff, recent_weeks=recent_weeks)
+    out = _add_extra_features(out, cutoff, extra, recent_weeks)
     return out
 
 

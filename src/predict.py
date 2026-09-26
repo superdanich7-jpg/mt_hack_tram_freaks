@@ -53,7 +53,12 @@ def build_forecast_grid() -> pd.DataFrame:
     return grid
 
 
-def determine_rounds(use_weather: bool, exclude: tuple[str, ...], recent_weeks: int) -> int:
+def determine_rounds(
+    use_weather: bool,
+    exclude: tuple[str, ...],
+    recent_weeks: int,
+    extra: tuple[str, ...] = (),
+) -> int:
     """Число деревьев из early stopping на октябрьской валидации."""
     result = run_training(
         use_weather=use_weather,
@@ -62,6 +67,7 @@ def determine_rounds(use_weather: bool, exclude: tuple[str, ...], recent_weeks: 
         valid_start=cfg.VALID_START,
         save=False,
         recent_weeks=recent_weeks,
+        extra=extra,
     )
     best = int(result["metrics"]["best_iteration"]) or 500
     rounds = max(50, int(round(best * ROUNDS_MULTIPLIER)))
@@ -79,6 +85,7 @@ def train_final_model(
     exclude: tuple[str, ...] = FINAL_EXCLUDE,
     recent_weeks: int = FINAL_RECENT_WEEKS,
     rounds: int | None = None,
+    extra: tuple[str, ...] | None = None,
 ):
     """Обучение финальной модели на всей доступной истории + признаки для прогноза."""
     if use_weather and not weather_available():
@@ -88,18 +95,20 @@ def train_final_model(
         )
         use_weather = False
 
+    extra = cfg.FINAL_EXTRA_GROUPS if extra is None else extra
     history = load_and_prepare()
     grid = build_forecast_grid()
 
     if rounds is None:
-        rounds = determine_rounds(use_weather, exclude, recent_weeks)
+        rounds = determine_rounds(use_weather, exclude, recent_weeks, extra)
 
     full = pd.concat([history, grid], ignore_index=True)
     full["date"] = pd.to_datetime(full["date"])
     feats = make_features(
-        full, cutoff=cfg.FORECAST_START, use_weather=use_weather, recent_weeks=recent_weeks
+        full, cutoff=cfg.FORECAST_START, use_weather=use_weather,
+        recent_weeks=recent_weeks, extra=extra,
     )
-    cols = get_feature_columns(use_weather=use_weather, exclude=exclude)
+    cols = get_feature_columns(use_weather=use_weather, exclude=exclude, extra=extra)
 
     train_mask = feats["date"] < cfg.FORECAST_START
     future_mask = feats["date"] >= cfg.FORECAST_START
@@ -126,6 +135,105 @@ def train_final_model(
     future["baseline_recent"] = round_predictions(future["recent_rhd_med"])
     future = future.drop(columns=["recent_rhd_med"]).reset_index(drop=True)
     return model, future, rounds, cols
+
+
+def train_final_ensemble(
+    use_weather: bool = FINAL_USE_WEATHER,
+    extra: tuple[str, ...] | None = None,
+    recent_weeks: int = FINAL_RECENT_WEEKS,
+    ensemble: dict[str, dict] | None = None,
+    rounds_override: dict[str, int] | None = None,
+):
+    """
+    Обучение финального ансамбля на всей истории (2025-01-01 … 2025-10-31).
+
+    Каждая модель обучается с фиксированным числом итераций (без early
+    stopping), взятым из валидации на октябре, и прогнозы объединяются
+    взвешенным средним с весами из config.FINAL_ENSEMBLE.
+
+    :param extra: группы признаков V3 (по умолчанию config.FINAL_EXTRA_GROUPS).
+    :param rounds_override: переопределение числа итераций по моделям.
+    :return: (future, cols, сводка по моделям).
+    """
+    from src.models_zoo import predict_model, train_model
+
+    if use_weather and not weather_available():
+        logger.warning(
+            "Кэш погоды data/external/weather.csv не найден — прогноз без погодных "
+            "признаков. Запусти `python -m src.external.weather`, чтобы их вернуть."
+        )
+        use_weather = False
+
+    extra = cfg.FINAL_EXTRA_GROUPS if extra is None else extra
+    ensemble = cfg.FINAL_ENSEMBLE if ensemble is None else ensemble
+    rounds_override = rounds_override or {}
+
+    history = load_and_prepare()
+    grid = build_forecast_grid()
+    full = pd.concat([history, grid], ignore_index=True)
+    full["date"] = pd.to_datetime(full["date"])
+
+    feats = make_features(
+        full,
+        cutoff=cfg.FORECAST_START,
+        use_weather=use_weather,
+        recent_weeks=recent_weeks,
+        extra=extra,
+    )
+    cols = get_feature_columns(
+        use_weather=use_weather, exclude=FINAL_EXCLUDE, extra=extra
+    )
+    train_mask = feats["date"] < cfg.FORECAST_START
+    future_mask = feats["date"] >= cfg.FORECAST_START
+
+    X_tr = feats.loc[train_mask, cols]
+    y_tr = feats.loc[train_mask, "boardings"]
+
+    future = feats.loc[future_mask, ["route", "date", "hour", "recent_rhd_med"]].copy()
+    X_fu = feats.loc[future_mask, cols]
+
+    blended = np.zeros(int(future_mask.sum()), dtype=float)
+    weight_sum = 0.0
+    summary: dict[str, dict] = {}
+
+    for name, spec in ensemble.items():
+        rounds = int(rounds_override.get(name, spec["rounds"]))
+        weight = float(spec["weight"])
+        model, _ = train_model(name, X_tr, y_tr, X_valid=X_tr, y_valid=y_tr, n_rounds=rounds)
+        raw = predict_model(name, model, X_fu)
+        blended += weight * raw
+        weight_sum += weight
+        summary[name] = {"rounds": rounds, "weight": weight, "mean_pred": float(np.mean(raw))}
+        logger.info("Ансамбль: %s обучена, %d итераций, вес %.2f", name, rounds, weight)
+        if name == cfg.IMPORTANCE_MODEL:
+            save_feature_importance(model, cols)
+
+    future["prediction"] = round_predictions(blended / max(weight_sum, 1e-9))
+    future["baseline_recent"] = round_predictions(future["recent_rhd_med"])
+    future = future.drop(columns=["recent_rhd_med"]).reset_index(drop=True)
+    return future, cols, summary
+
+
+def save_feature_importance(
+    model, cols: list[str], out_path: Path | None = None
+) -> Path | None:
+    """
+    Сохраняет важность признаков обученной модели (LightGBM gain).
+
+    :return: путь к файлу или None, если модель не LightGBM.
+    """
+    out_path = out_path or cfg.FEATURE_IMPORTANCE_V3_PATH
+    if not hasattr(model, "feature_importances_"):
+        return None
+    frame = pd.DataFrame(
+        {"feature": list(cols), "importance": np.asarray(model.feature_importances_)}
+    )
+    frame["share"] = frame["importance"] / frame["importance"].sum()
+    frame = frame.sort_values("importance", ascending=False).reset_index(drop=True)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    frame.to_csv(out_path, index=False, encoding="utf-8")
+    logger.info("Важность признаков сохранена: %s", out_path)
+    return out_path
 
 
 def apply_route5_zeros(df: pd.DataFrame) -> pd.DataFrame:
@@ -184,15 +292,26 @@ def main() -> None:
     parser.add_argument("--recent-weeks", type=int, default=FINAL_RECENT_WEEKS)
     parser.add_argument("--no-weather", action="store_true", help="Отключить погодные признаки")
     parser.add_argument("--out", type=str, default=str(cfg.SUBMISSION_CSV_PATH))
+    parser.add_argument(
+        "--ensemble",
+        action="store_true",
+        help="Финальный ансамбль LightGBM+CatBoost+XGBoost вместо одиночного LightGBM",
+    )
     args = parser.parse_args()
 
     use_weather = not args.no_weather
-    _, future, rounds, cols = train_final_model(
-        use_weather=use_weather,
-        exclude=FINAL_EXCLUDE,
-        recent_weeks=args.recent_weeks,
-        rounds=args.rounds,
-    )
+    if args.ensemble:
+        future, cols, summary = train_final_ensemble(
+            use_weather=use_weather, recent_weeks=args.recent_weeks
+        )
+        rounds = {k: v["rounds"] for k, v in summary.items()}
+    else:
+        _, future, rounds, cols = train_final_model(
+            use_weather=use_weather,
+            exclude=FINAL_EXCLUDE,
+            recent_weeks=args.recent_weeks,
+            rounds=args.rounds,
+        )
 
     cfg.SUBMISSIONS_DIR.mkdir(parents=True, exist_ok=True)
     forecast = apply_route5_zeros(future)
