@@ -120,13 +120,25 @@ def tune_model(
     )
     return {
         "model": name,
-        "best_params": {k: float(v) for k, v in best.params.items()},
+        "best_params": _normalise_params(best.params),
         "best_score": float(best.value),
         "n_trials": len(study.trials),
         "history": [
             {"number": t.number, "score": float(t.value), "params": t.params}
             for t in study.trials
         ],
+    }
+
+
+def _normalise_params(params: dict[str, Any]) -> dict[str, Any]:
+    """
+    Приводит типы параметров к ожидаемым библиотеками.
+
+    Optuna отдаёт целые как int, но при сериализации в JSON они могут
+    превратиться в float, а XGBoost затем падает с «max_depth expect int».
+    """
+    return {
+        k: (int(v) if k in INT_PARAMS else float(v)) for k, v in params.items()
     }
 
 

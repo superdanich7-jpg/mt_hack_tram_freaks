@@ -407,6 +407,65 @@ def _md_table(frame: pd.DataFrame, floatfmt: str = "{:.4f}") -> str:
     return "\n".join(lines)
 
 
+def stage_tune_holdout(
+    df: pd.DataFrame,
+    folds: list[Fold],
+    models: list[str] | None = None,
+    n_trials: int = 15,
+) -> dict[str, Any]:
+    """
+    Честная проверка тюнинга: Optuna на ОДНОМ валидационном фолде,
+    затем применение найденных параметров к фолдам, которые в подборе
+    не участвовали.
+
+    Это ключевая проверка: подбор на тестовом месяце даёт оптимистичную
+    оценку, а здесь тестовый месяц остаётся нетронутым до самого конца.
+    """
+    models = models or ["LightGBM", "XGBoost"]
+    tune_fold = folds[1]
+    holdout = [f for f in folds if f.name != tune_fold.name]
+    out: dict[str, Any] = {}
+
+    for name in models:
+        feats, cols, tr, va = build_fold_matrix(df, tune_fold, extra=BASE_EXTRA)
+        study = tune_model(
+            name, feats.loc[tr, cols], feats.loc[tr, "boardings"],
+            feats.loc[va, cols], feats.loc[va, "boardings"], n_trials=n_trials,
+        )
+        params = study["best_params"]
+
+        holdout_scores: dict[str, dict[str, float]] = {}
+        for fold in holdout:
+            feats, cols, tr, va = build_fold_matrix(df, fold, extra=BASE_EXTRA)
+            y = feats.loc[va, "boardings"]
+            entry: dict[str, float] = {}
+            for label, p in (("default", None), ("tuned", params)):
+                model, _ = train_model(
+                    name, feats.loc[tr, cols], feats.loc[tr, "boardings"],
+                    feats.loc[va, cols], y, params=p,
+                )
+                preds = round_predictions(predict_model(name, model, feats.loc[va, cols]))
+                entry[label] = compute_metrics(y, preds)["WAPE_score"]
+            delta = entry["tuned"] - entry["default"]
+            logger.info(
+                "%-12s %-9s default=%.5f tuned=%.5f (%+.5f)",
+                name, fold.name, entry["default"], entry["tuned"], delta,
+            )
+            holdout_scores[fold.name] = {**entry, "delta": delta}
+
+        payload = {
+            **study,
+            "tuned_on": tune_fold.name,
+            "tune_fold_score": study["best_score"],
+            "holdout_scores": holdout_scores,
+        }
+        save_study(payload, V3_DIR / f"optuna_{name.lower()}_honest.json")
+        out[name] = payload
+
+    _write_cache("tuning_holdout.json", out)
+    return out
+
+
 def stage_report(out_path: Path | None = None) -> Path:
     """Собирает reports/final_model_analysis.md из кэшей предыдущих этапов."""
     from src.report_v3 import build_report
@@ -421,11 +480,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(description="Финальный эксперимент V3")
     parser.add_argument(
         "--stage", default="all",
-        choices=["all", "ablate", "models", "ensemble", "tune", "report"],
+        choices=["all", "ablate", "models", "ensemble", "tune", "tune-holdout", "report"],
     )
     parser.add_argument("--models", default="LightGBM",
                         help="Модели для этапа ablate (через запятую)")
-    parser.add_argument("--trials", type=int, default=30, help="Число trial'ов Optuna")
+    parser.add_argument("--trials", type=int, default=0,
+                        help="Число trial'ов Optuna (0 = бюджет из tune.TRIALS_DEFAULT)")
+    parser.add_argument("--holdout-trials", type=int, default=15,
+                        help="Trial'ов для честной проверки тюнинга (optuna-holdout)")
     parser.add_argument("--no-nn", action="store_true", help="Пропустить LSTM+attention")
     parser.add_argument("--no-stats", action="store_true", help="Пропустить статистические базисы")
     parser.add_argument("--extra", default="cross_route",
@@ -435,7 +497,6 @@ def main() -> None:
     data = load_and_prepare()
     folds = build_folds()
     extra = tuple(x.strip() for x in args.extra.split(",") if x.strip())
-    stages = {"all", "ablate", "models", "ensemble", "tune", "report"}
 
     if args.stage in {"all", "ablate"}:
         models = [m.strip() for m in args.models.split(",") if m.strip()]
@@ -443,6 +504,9 @@ def main() -> None:
 
     if args.stage in {"all", "tune"}:
         stage_tune(data, folds[-1], args_trials=args.trials)
+
+    if args.stage in {"all", "tune-holdout"}:
+        stage_tune_holdout(data, folds, n_trials=args.holdout_trials)
 
     if args.stage in {"all", "models"}:
         stage_models(data, folds, extra=extra, with_nn=not args.no_nn,

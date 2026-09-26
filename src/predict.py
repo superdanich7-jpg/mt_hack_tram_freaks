@@ -64,6 +64,7 @@ def determine_rounds(
         use_weather=use_weather,
         model_path=None,
         exclude=exclude,
+        params=cfg.FINAL_LGBM_PARAMS,
         valid_start=cfg.VALID_START,
         save=False,
         recent_weeks=recent_weeks,
@@ -113,7 +114,9 @@ def train_final_model(
     train_mask = feats["date"] < cfg.FORECAST_START
     future_mask = feats["date"] >= cfg.FORECAST_START
 
-    params = dict(cfg.LGBM_PARAMS)
+    # Финальные параметры: базовая конфигурация V2 + Optuna-тюнинг,
+    # проверенный на holdout-фолдах (см. config.LGBM_TUNED_PARAMS).
+    params = dict(cfg.FINAL_LGBM_PARAMS)
     params["n_estimators"] = rounds
     model = lgb.LGBMRegressor(**params)
     cat_feats = [c for c in CATEGORICAL_FEATURES if c in cols]

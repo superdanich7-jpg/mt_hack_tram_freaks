@@ -79,7 +79,7 @@ def _cast_for_boost(df: pd.DataFrame, cats: list[str]) -> pd.DataFrame:
 
 def fit_lgbm(X_train, y_train, X_valid, y_valid, params=None, n_rounds=None):
     """LightGBM с early stopping по L1. Возвращает модель и число деревьев."""
-    p = dict(LGBM_PARAMS if params is None else params)
+    p = dict(LGBM_PARAMS, **(params or {}))
     model = lgb.LGBMRegressor(**p)
     fit_kwargs: dict[str, Any] = {"categorical_feature": _cat_cols(X_train.columns)}
     if n_rounds is not None:
@@ -98,7 +98,7 @@ def fit_lgbm(X_train, y_train, X_valid, y_valid, params=None, n_rounds=None):
 
 def fit_catboost(X_train, y_train, X_valid, y_valid, params=None, n_rounds=None):
     """CatBoost с early stopping по MAE."""
-    p = dict(CATBOOST_PARAMS if params is None else params)
+    p = dict(CATBOOST_PARAMS, **(params or {}))
     model = CatBoostRegressor(**p)
     fit_kwargs: dict[str, Any] = {"cat_features": _cat_cols(X_train.columns)}
     if n_rounds is not None:
@@ -115,7 +115,7 @@ def fit_catboost(X_train, y_train, X_valid, y_valid, params=None, n_rounds=None)
 
 def fit_xgb(X_train, y_train, X_valid, y_valid, params=None, n_rounds=None):
     """XGBoost с objective=reg:absoluteerror и ранней остановкой."""
-    p = dict(XGB_PARAMS if params is None else params)
+    p = dict(XGB_PARAMS, **(params or {}))
     cats = _cat_cols(X_train.columns)
     model = XGBRegressor(**p)
     fit_kwargs: dict[str, Any] = {"eval_set": [(X_valid, y_valid)]}

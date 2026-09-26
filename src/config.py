@@ -55,7 +55,27 @@ LGBM_PARAMS: dict = {
     "verbose": -1,
 }
 
+# Гиперпараметры LightGBM, найденные Optuna на валидационном фолде 2025-09.
+# Проверены на двух фолдах, которых в подборе не участвовали:
+# август 0.87915 → 0.88606 (+0.0069), октябрь 0.90585 → 0.90819 (+0.0023).
+# Эффект небольшой, но знак прироста стабилен на обоих фолдах,
+# поэтому конфигурация принята как финальная (см. reports/final_model_analysis.md, 3.4).
+LGBM_TUNED_PARAMS: dict = {
+    **LGBM_PARAMS,
+    "num_leaves": 65,
+    "learning_rate": 0.021557230126332507,
+    "min_child_samples": 72,
+    "subsample": 0.7773723679026682,
+    "colsample_bytree": 0.7358284803271511,
+    "reg_alpha": 6.752807943613342,
+    "reg_lambda": 9.727853536370453,
+}
+
 EARLY_STOPPING_ROUNDS: int = 100
+
+# Параметры финальной модели. По умолчанию — тюнированные Optuna на фолде
+# 2025-09 (см. LGBM_TUNED_PARAMS и раздел 3.4 отчёта).
+FINAL_LGBM_PARAMS: dict = LGBM_TUNED_PARAMS
 
 # Вес блендинга: prediction = BLEND_ALPHA * LGBM + (1 - BLEND_ALPHA) * robust_baseline
 BLEND_ALPHA: float = 0.6

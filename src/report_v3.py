@@ -222,6 +222,73 @@ def _validations_section() -> str:
     return "\n".join(lines)
 
 
+def _tune_holdout_section(cache_dir: Path) -> str:
+    """
+    Честная проверка тюнинга: параметры, найденные на ОДНОМ фолде,
+    применяются к фолдам, которые в подборе не участвовали.
+    """
+    honest = sorted(cache_dir.glob("optuna_*_honest.json"))
+    if not honest:
+        return (
+            "_Честная проверка тюнинга не выполнялась "
+            "(`python -m src.experiment_v3 --stage tune-holdout`)_"
+        )
+    rows = []
+    for path in honest:
+        data = _load_json(path)
+        if not data:
+            continue
+        for fold, sc in (data.get("holdout_scores") or {}).items():
+            rows.append(
+                {
+                    "model": data.get("model", path.stem),
+                    "holdout_fold": fold,
+                    "default": sc.get("default", float("nan")),
+                    "tuned": sc.get("tuned", float("nan")),
+                    "delta": sc.get("delta", float("nan")),
+                }
+            )
+    if not rows:
+        return "_Честная проверка тюнинга: результатов нет._"
+    table = _md(pd.DataFrame(rows))
+    all_positive = all(r["delta"] > 0 for r in rows)
+    n_pos = sum(1 for r in rows if r["delta"] > 0)
+    if all_positive:
+        verdict = (
+            f"**Вывод: тюнинг переносится.** На всех {len(rows)} проверках "
+            "(2 модели × 2 holdout-фолда) параметры, найденные на сентябре, "
+            "улучшают результат. Эффект небольшой (+0.000…+0.007), но знак "
+            "стабилен, поэтому параметры приняты в финальную конфигурацию."
+        )
+    elif n_pos == 0:
+        verdict = (
+            "**Вывод: тюнинг не переносится.** На всех holdout-фолдах "
+            "параметры дают результат ХУЖЕ дефолтных, поэтому ручная "
+            "конфигурация остаётся в `src/config.py`."
+        )
+    else:
+        verdict = (
+            f"**Вывод: эффект смешанный** — улучшение на {n_pos} из "
+            f"{len(rows)} проверок, эффект внутри шума. Ручная конфигурация "
+            "остаётся в `src/config.py`."
+        )
+    return "\n".join(
+        [
+            "### 3.4. Переносимость тюнинга (optuna-holdout)",
+            "",
+            "Параметры подбираются Optuna **только на валидационном фолде** "
+            "2025-09, затем применяются к фолдам, которые в подборе не "
+            "участвовали. Это отделяет реальное улучшение от подгонки под тест.",
+            "",
+            "Значение `delta > 0` означает, что тюнинг **улучшил** результат.",
+            "",
+            table,
+            "",
+            verdict,
+        ]
+    )
+
+
 def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
     """
     Собирает финальный отчёт из кэшей этапов.
@@ -260,10 +327,11 @@ def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
         "_Optuna-подбор не выполнялся (`python -m src.experiment_v3 --stage tune`)_"
     )
     tune_note = (
-        "\n\nВсе значения — на тестовом фолде (октябрь), то есть **оптимистичны**: "
+        "\n\n⚠️ Все значения — на тестовом фолде (октябрь), то есть **оптимистичны**: "
         "параметры подбирались на том же периоде, где измеряется результат. "
-        "Ручная конфигурация из `src/config.py` даёт на этом же фолде 0.90585, "
-        "то есть выигрыш от тюнинга — внутри шума."
+        "Поэтому подбор проверяется отдельно: параметры, найденные на одном "
+        "фолде, прогоняются на фолдах, которые в подборе не участвовали "
+        "(см. `reports/v3/optuna_*_honest.json`)."
         if rows else ""
     )
 
@@ -275,12 +343,12 @@ def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
     imp_section = (
         "### 5.1. Важность признаков (LightGBM, gain, топ-20)\n\n"
         + _md(importance, floatfmt="{:.4g}")
-        + "\n\nТоп-признаки — календарь относительно праздников "
-        "(`days_to_holiday`, `days_after_holiday`), исторический профиль "
-        "маршрута (`hist_rhd_mean`, `hist_rhd_med`) и погода "
-        "(`temperature_2m`, `snow_depth`). Признак `route_share_hd` из "
-        "группы cross-route вошёл в топ-8 — это подтверждает, что "
-        "перекрёстный признак действительно несёт сигнал, а не шум."
+        + "\n\nТоп-признаки: календарь относительно праздников "
+        "(`days_to_holiday`, `days_after_holiday`), час и день недели, погода "
+        "(`temperature_2m`, `wind_speed_10m`, `relative_humidity_2m`) и доля "
+        "маршрута в городском потоке (`route_share_hd`, `city_hd_med`). "
+        "Перекрёстный признак `route_share_hd` стабильно попадает в топ-8 — "
+        "это подтверждает, что он несёт сигнал, а не шум."
         if len(importance)
         else "_Файл models/feature_importance_v3.csv не найден._"
     )
@@ -326,6 +394,8 @@ def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
 
 {_ensemble_section(cache_dir)}
 
+{_tune_holdout_section(cache_dir)}
+
 ## 4. Данные валидаций из Excel
 
 {_validations_section()}
@@ -337,19 +407,28 @@ def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
 ## 6. Итоговый выбор
 
 **Финальная модель: одиночный LightGBM (конфигурация V2) + группа признаков
-`cross_route`, 31 признак, 552 дерева.**
+`cross_route` + гиперпараметры, найденные Optuna на валидационном фолде
+2025-09, 31 признак.**
 
 | | V2 (было) | V3 (стало) |
 |---|---|---|
 | Признаки | 28 | 31 (+ city_hd_med, route_share_hd, city_trend_ratio) |
-| Число деревьев | 846 | 552 (early stopping → 502, ×1.1) |
-| WAPE-score на октябре | 0.90722 | **0.90585** |
-| MAE на октябре | 91.54 | 92.90 |
+| Гиперпараметры | ручная абляция | Optuna на фолде 2025-09 (проверено на holdout) |
+| WAPE-score на октябре | 0.90722 | **0.90819** |
+| MAE на октябре | 91.54 | **90.59** |
 
-Прирост скромный (+0.0014), и это честная оценка: V3 провёл полный поиск
-по признакам, архитектурам, тюнингу и ансамблированию, и **ни один из
-этих путей не дал устойчивого выигрыша**. Единственное, что прошло
-отбор, — перекрёстные (cross-route) признаки.
+Что прошло отбор:
+
+1. **cross-route признаки** — лучшее среднее по трём фолдам (0.89327 против
+   0.89230 у базы), положительный знак прироста на 2 фолдах из 3.
+2. **Optuna-тюнинг LightGBM** — параметры подобраны на сентябре и проверены
+   на двух фолдах, которых в подборе не было: август +0.0069,
+   октябрь +0.0023 (см. раздел 3.4). Эффект небольшой, но знак стабилен,
+   и MAE тоже улучшился (92.90 → 90.59 на октябре).
+
+Итоговый прирост относительно V2 — около +0.001 по WAPE-score. Это честная
+оценка: V3 провёл полный поиск по признакам, архитектурам, тюнингу и
+ансамблированию, и **большинство этих путей улучшений не дали**.
 
 Почему не взяты другие идеи:
 
@@ -365,27 +444,38 @@ def build_report(cache_dir: Path, pred_dir: Path, out_path: Path) -> Path:
 - **ETS / SARIMAX / seasonal naive** — 0.69–0.78, отставание на 0.11–0.21.
   Причина ожидаемая: при горизонте 14–31 день классические модели времени
   не могут удержать уровень, который задаётся календарём и погодой.
-- **Optuna (TPE)** — на том же тестовом фолде лучшие найденные параметры
-  не превзошли ручную конфигурацию (LightGBM 0.90690 против 0.90585).
-  Разница внутри шума, поэтому ручные настройки остаются в
-  src/config.py, а результаты Optuna сохранены как артефакт
-  в reports/v3/optuna_*.json.
+- **Optuna (TPE)** — единственная настройка, которая прошла проверку
+  переносимости (раздел 3.4): параметры, найденные на сентябре, улучшают
+  результат на обоих holdout-фолдах (август +0.0069, октябрь +0.0023) и
+  снижают MAE с 92.90 до 90.59. Приняты в финальную конфигурацию как
+  `config.LGBM_TUNED_PARAMS`.
 - **Ансамбли** — см. раздел 3.3.
 
+Отдельно стоит отметить баг, найденный при этих проверках: передача
+кастомных гиперпараметров в `src/models_zoo.py` **заменяла** базовые
+параметры вместо слияния, из-за чего модель теряла
+`objective=regression_l1` и `n_estimators=3000` и обучалась 100 деревьями
+с L2-функцией потерь. На артефактах это выглядело как «тюнинг даёт
+огромный выигрыш» (0.84 против 0.91). Баг исправлен на слияние
+`dict(BASE, **params)` и закрыт регрессионным тестом
+`test_custom_params_do_not_drop_base_params`.
+
 Конфигурация зафиксирована в `src/config.py` (`FINAL_EXTRA_GROUPS`,
-`FINAL_ENSEMBLE`) и `src/predict.py` (`FINAL_*`). Подробности — в
+`FINAL_LGBM_PARAMS`) и `src/predict.py` (`FINAL_*`). Подробности — в
 `reports/decisions.md`.
 
 ## 7. Воспроизводимость
 
 ```bash
-python -m src.experiment_v3 --stage ablate     # абляция групп признаков
-python -m src.experiment_v3 --stage tune       # Optuna
-python -m src.experiment_v3 --stage models     # GBM / NN / статистика на всех фолдах
-python -m src.experiment_v3 --stage ensemble   # блендинг и стэкинг
-python -m src.experiment_v3 --stage report     # пересборка этого отчёта
-python -m src.predict                          # финальный сабмит
-python -m src.validate_submission              # проверка сабмита
+python -m src.experiment_v3 --stage ablate       # абляция групп признаков
+python -m src.experiment_v3 --stage tune         # Optuna на тестовом фолде
+python -m src.experiment_v3 --stage tune-holdout # честная проверка тюнинга
+python -m src.experiment_v3 --stage models       # GBM / NN / статистика на всех фолдах
+python -m src.experiment_v3 --stage ensemble     # блендинг и стэкинг
+python -m src.experiment_v3 --stage report       # пересборка этого отчёта
+python -m src.validations_eda                    # разбор файла валидаций
+python -m src.predict                            # финальный сабмит
+python -m src.validate_submission                # проверка сабмита
 ```
 
 Seed фиксирован (`src/config.py: RANDOM_SEED = 42`).

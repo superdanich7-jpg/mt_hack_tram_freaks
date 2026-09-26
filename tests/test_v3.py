@@ -135,6 +135,43 @@ def test_train_model_rejects_unknown_name() -> None:
 
     from src.models_zoo import train_model
 
+def test_custom_params_do_not_drop_base_params() -> None:
+    """
+    Кастомные параметры ДОПОЛНЯЮТ базовые, а не заменяют их.
+
+    Регрессия: при передаче params терялись objective и n_estimators,
+    из-за чего «тюненная» модель обучалась на 100 деревьях с L2-функцией
+    потерь вместо L1. Проверяем слияние на уровне обучающих функций.
+    """
+    import pandas as pd
+
+    from src.models_zoo import (
+        CATBOOST_PARAMS,
+        LGBM_PARAMS,
+        XGB_PARAMS,
+        train_model,
+    )
+
+    custom = {"num_leaves": 81, "learning_rate": 0.02}
+    merged = dict(LGBM_PARAMS, **custom)
+    assert merged["objective"] == "regression_l1"
+    assert merged["n_estimators"] >= 1000
+    assert merged["num_leaves"] == 81
+    assert dict(CATBOOST_PARAMS, **custom)["loss_function"] == "MAE"
+    assert dict(XGB_PARAMS, **custom)["objective"] == "reg:absoluteerror"
+
+    # Практическая проверка: обучение с кастомными параметрами идёт
+    # с полным бюджетом итераций, а не с дефолтными 100.
+    X = pd.DataFrame({"x": list(range(50))})
+    y = pd.Series(list(range(50)), dtype=float)
+    _, rounds = train_model("LightGBM", X, y, X, y, params=custom)
+    assert rounds > 100, (
+        f"модель остановилась на {rounds} деревьях — базовые параметры потеряны"
+    )
+
+
+def test_unknown_feature_group_raises() -> None:
+
     empty = pd.DataFrame({"x": [1, 2]})
     with pytest.raises(KeyError):
         train_model("НетТакой", empty, pd.Series([1, 2]), empty, pd.Series([1, 2]))
