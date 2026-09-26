@@ -40,6 +40,7 @@ def build_datasets(
     use_weather: bool = False,
     exclude: tuple[str, ...] = (),
     valid_start: str = cfg.VALID_START,
+    valid_end: str | None = None,
     recent_weeks: int = cfg.RECENT_WEEKS,
 ):
     """Готовит train/valid матрицы признаков без утечки из будущего."""
@@ -57,7 +58,10 @@ def build_datasets(
     cols = get_feature_columns(use_weather=use_weather, exclude=exclude)
 
     train_mask = feats["date"] < valid_start
-    valid_mask = feats["date"] >= valid_start
+    if valid_end is not None:
+        valid_mask = (feats["date"] >= valid_start) & (feats["date"] <= valid_end)
+    else:
+        valid_mask = feats["date"] >= valid_start
 
     X_train = feats.loc[train_mask, cols]
     y_train = feats.loc[train_mask, "boardings"]
@@ -93,6 +97,7 @@ def run_training(
     exclude: tuple[str, ...] = (),
     params: dict | None = None,
     valid_start: str = cfg.VALID_START,
+    valid_end: str | None = None,
     save: bool = True,
     recent_weeks: int = cfg.RECENT_WEEKS,
 ) -> dict:
@@ -101,6 +106,7 @@ def run_training(
         use_weather=use_weather,
         exclude=exclude,
         valid_start=valid_start,
+        valid_end=valid_end,
         recent_weeks=recent_weeks,
     )
     model = train_lgbm(X_train, y_train, X_valid, y_valid, params=params)
@@ -111,7 +117,10 @@ def run_training(
 
     # Baseline-опора для блендинга: медиана (route, hour, dow) за последние 4 недели
     feats["dow"] = feats["date"].dt.dayofweek.astype("int32")
-    valid_frame = feats[feats["date"] >= valid_start].copy()
+    if valid_end is not None:
+        valid_frame = feats[(feats["date"] >= valid_start) & (feats["date"] <= valid_end)].copy()
+    else:
+        valid_frame = feats[feats["date"] >= valid_start].copy()
     valid_frame["lgbm_pred"] = np.clip(raw_pred, 0.0, None)
     blend_pred = round_predictions(
         cfg.BLEND_ALPHA * valid_frame["lgbm_pred"].values
