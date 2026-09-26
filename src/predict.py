@@ -13,6 +13,7 @@
     python -m src.predict
 """
 import argparse
+import json
 import logging
 from pathlib import Path
 
@@ -87,6 +88,7 @@ def train_final_model(
     recent_weeks: int = FINAL_RECENT_WEEKS,
     rounds: int | None = None,
     extra: tuple[str, ...] | None = None,
+    save_model_to: Path | None = cfg.MODEL_FINAL_PATH,
 ):
     """Обучение финальной модели на всей доступной истории + признаки для прогноза."""
     if use_weather and not weather_available():
@@ -131,6 +133,16 @@ def train_final_model(
         len(cols),
         rounds,
     )
+
+    # Обязательный артефакт для жюри (п.1 PDF: «ссылка на артефакты ML-модели»).
+    # Без этого модель живёт только в памяти и после рестарта её не восстановить.
+    if save_model_to is not None:
+        save_model_to.parent.mkdir(parents=True, exist_ok=True)
+        model.booster_.save_model(str(save_model_to))
+        (save_model_to.parent / "feature_list.json").write_text(
+            json.dumps(cols, ensure_ascii=False, indent=2), encoding="utf-8"
+        )
+        logger.info("Модель сохранена: %s", save_model_to)
 
     future = feats.loc[future_mask, ["route", "date", "hour", "recent_rhd_med"]].copy()
     future["prediction"] = np.clip(model.predict(feats.loc[future_mask, cols]), 0.0, None)

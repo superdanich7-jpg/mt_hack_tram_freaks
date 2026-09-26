@@ -15,6 +15,10 @@ QA_audio.mp3
 # Модели
 models/*.bin
 models/*.txt
+# Финальная модель - обязательный артефакт для жюри (п.1 PDF),
+# поэтому исключение из правила выше. Размер ~2-3 МБ, git его тянет.
+!models/lgbm_final.txt
+!models/feature_list.json
 models/*.pkl
 *.lgb
 *.cbm
