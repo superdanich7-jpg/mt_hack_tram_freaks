@@ -70,6 +70,7 @@ docs/qa/              исходное ТЗ и материалы QA
 |---|---|
 | [`README_ML.md`](README_ML.md) | подробная инструкция по ML-части |
 | [`reports/final_model_analysis.md`](reports/final_model_analysis.md) | полный разбор поиска модели: что пробовали, что отклонили и почему |
+| [`reports/december_analysis.md`](reports/december_analysis.md) | разбор прогноза на ноябрь–декабрь: Новый год, погода, калибровка уровня |
 | [`reports/validation.md`](reports/validation.md) | метрики финального прогноза |
 | [`reports/decisions.md`](reports/decisions.md) | журнал архитектурных решений |
 | [`api_spec.md`](api_spec.md) | REST API для backend-сервиса |
@@ -88,6 +89,12 @@ LSTM+attention, ETS/SARIMAX, Optuna, четыре варианта ансамб�
 временных фолдах, а не по лучшему числу на одном месяце, поскольку
 разброс между месяцами (≈0.017 WAPE-score) в 2–3 раза больше разницы
 между конфигурациями (≈0.005).
+
+Почему Новый год и декабрь: [`reports/december_analysis.md`](reports/december_analysis.md).
+Коротко: 31.12 модель уже опускает до 0.42 от нормы через
+`is_official_holiday`, погода прогноза лежит внутри обучающего диапазона,
+а ошибка уровня средне-возвращается — поэтому вместо угадывания
+используется бюджет попыток (`python -m src.make_variants`).
 
 ## Область определения и ограничения
 

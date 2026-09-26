@@ -23,6 +23,7 @@ models/*.pkl
 *.lgb
 *.cbm
 models/preds/
+models/calib_preds/
 
 # Служебные каталоги CatBoost / Optuna
 catboost_info/
