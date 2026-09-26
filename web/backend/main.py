@@ -3,6 +3,7 @@ import secrets
 from typing import Optional
 import pandas as pd
 from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.responses import RedirectResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
 
@@ -19,7 +20,8 @@ def authenticate(credentials: HTTPBasicCredentials = Depends(security)):
         )
     return credentials.username
 
-app = FastAPI(dependencies=[Depends(authenticate)])
+app = FastAPI()
+
 
 app.add_middleware(
     CORSMiddleware,
@@ -28,6 +30,10 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+
+@app.get("/", include_in_schema=False, dependencies=[])
+def root():
+    return RedirectResponse(url="/docs")
 
 MOCK_ROUTES = [1, 2, 3]
 MOCK_FORECAST = [{"datetime": "2025-11-01T06:00:00", "passengers": 42}]
@@ -93,7 +99,7 @@ def _to_forecast_records(subset: pd.DataFrame) -> list[dict]:
         for _, row in subset.iterrows()
     ]
 
-@app.get("/routes")
+@app.get("/routes", dependencies=[Depends(authenticate)])
 def get_routes():
     df = load_data()
     if df.empty or "route" not in df.columns:
@@ -104,7 +110,7 @@ def get_routes():
     except Exception:
         return sorted(list(unique_routes))
 
-@app.get("/forecast")
+@app.get("/forecast", dependencies=[Depends(authenticate)])
 def get_forecast(route: str = "1", date: str = "2025-11-01"):
     df = load_data()
     if df.empty:
@@ -119,7 +125,7 @@ def get_forecast(route: str = "1", date: str = "2025-11-01"):
         return {"route": route, "date": date, "forecast": MOCK_FORECAST}
     return {"route": route, "date": date, "forecast": _to_forecast_records(subset.sort_values(by="hour"))}
 
-@app.get("/forecast/week")
+@app.get("/forecast/week", dependencies=[Depends(authenticate)])
 def get_forecast_week(route: str = "1", start: str = "2025-11-01"):
     df = load_data()
     if df.empty:
@@ -137,7 +143,7 @@ def get_forecast_week(route: str = "1", start: str = "2025-11-01"):
         return {"route": route, "start": start, "forecast": MOCK_FORECAST}
     return {"route": route, "start": start, "forecast": _to_forecast_records(subset.sort_values(by=["date", "hour"]))}
 
-@app.get("/forecast/month")
+@app.get("/forecast/month", dependencies=[Depends(authenticate)])
 def get_forecast_month(route: str = "1", month: str = "2025-11"):
     df = load_data()
     if df.empty:
