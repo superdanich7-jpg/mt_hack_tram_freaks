@@ -287,6 +287,8 @@ def test_extra_features_ignore_future(extra_feats: pd.DataFrame) -> None:
         c for c in get_feature_columns(use_weather=True, extra=tuple(EXTRA_GROUPS))
         if c not in keys
     ]
+    # Сравниваем по ключу, а не по позиции: make_features сохраняет
+    # порядок СВОЕГО входного кадра, а в тесте входы собраны по-разному.
     a = extra_feats.set_index(keys)[cols].sort_index()
     b = again.set_index(keys)[cols].sort_index()
     pd.testing.assert_frame_equal(a, b)

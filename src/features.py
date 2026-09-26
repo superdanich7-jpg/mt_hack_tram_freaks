@@ -8,6 +8,7 @@ cutoff = 2025-11-01.
 
 Соответствует ai/FEATURES.md.
 """
+import logging
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -15,6 +16,12 @@ import pandas as pd
 DATA_PARQUET_PATH: Path = Path("data/processed/boardings.parquet")
 WEATHER_CSV_PATH: Path = Path("data/external/weather.csv")
 HOLIDAYS_CSV_PATH: Path = Path("data/external/holidays.csv")
+DAYLIGHT_CSV_PATH: Path = Path("data/external/daylight.csv")
+MACRO_CSV_PATH: Path = Path("data/external/macro.csv")
+
+# База отопительного градусо-дня (стандарт IMD) и окна накопления, часов
+HDD_BASE_C: float = 18.0
+HDD_WINDOWS: tuple[int, ...] = (24, 72, 168)
 
 # Длина "свежего" окна для оценки тренда уровня (в неделях)
 RECENT_WEEKS: int = 4
@@ -98,6 +105,22 @@ EXTRA_GROUPS: dict[str, list[str]] = {
     "volatility": ["hist_rhd_std", "hist_rhd_cv", "day_cv", "day_cv_recent"],
     # Перекрёстные (cross-route) признаки: активность города целиком
     "cross_route": ["city_hd_med", "route_share_hd", "city_trend_ratio"],
+    # Световой день: в декабре на 3,5 часа короче октября
+    "daylight": ["daylight_hours", "darkness_hours"],
+    # Отопительные градусо-дни: накопленная суровость зимы
+    "hdd": ["hdd_24h", "hdd_72h", "hdd_168h"],
+    # Макро-ряды: нефть и курс доллара
+    "macro": ["brent", "usd_rub"],
+    # Все дополнительные внешние источники сразу
+    "extra_external": [
+        "daylight_hours",
+        "darkness_hours",
+        "hdd_24h",
+        "hdd_72h",
+        "hdd_168h",
+        "brent",
+        "usd_rub",
+    ],
 }
 
 EXTRA_ALL: tuple[str, ...] = tuple(EXTRA_GROUPS)
@@ -486,6 +509,102 @@ def _add_cross_route_features(
     return df
 
 
+def _fill_daily_gap(series: pd.Series, pad_days: int = 10) -> pd.Series:
+    """
+    Заполняет пропуски дневного ряда по КАЛЕНДАРЮ дат, а не по строкам кадра.
+
+    Это принципиально: заливка по строкам зависит от их порядка, и одни
+    и те же данные давали бы разные признаки для одного и того же дня.
+    Пропуски возникают на нерабочих днях (1 января, выходные).
+
+    :param pad_days: на сколько дней расширить диапазон влево, чтобы
+        закрыть ведущие пропуски (1 января - нерабочий день биржи).
+    """
+    if series.dropna().empty:
+        return series
+    first = series.dropna().index.min() - pd.Timedelta(days=pad_days)
+    last = series.index.max()
+    full = pd.date_range(first, last, freq="D")
+    out = series.reindex(full).ffill().bfill()
+    # Имя индекса нужно сохранить, иначе reset_index() назовёт колонку "index"
+    out.index.name = series.index.name
+    return out
+
+
+def _add_daylight_and_macro(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Световой день (Open-Meteo) и макро-ряды (Brent, USD/RUB из Yahoo Finance).
+
+    Оба файла дневные, поэтому присоединяются по date и размазываются
+    на все часы этого дня. Отсутствие файла - не ошибка: функция
+    возвращает кадр с пустыми колонками, чтобы форма не ломалась.
+    """
+    out = df
+
+    if DAYLIGHT_CSV_PATH.exists():
+        dl = pd.read_csv(DAYLIGHT_CSV_PATH, parse_dates=["date"]).set_index("date")
+        filled = {
+            col: _fill_daily_gap(dl[col])
+            for col in ("daylight_hours", "darkness_hours")
+            if col in dl.columns
+        }
+        out = _merge_keep_keys(out, pd.DataFrame(filled).reset_index(), ["date"])
+    else:
+        logging.getLogger(__name__).warning(
+            "Файл %s не найден: признаки светового дня будут пустыми. "
+            "Запусти `python -m src.external.extra_data`.",
+            DAYLIGHT_CSV_PATH,
+        )
+        out = out.assign(daylight_hours=np.nan, darkness_hours=np.nan)
+
+    if MACRO_CSV_PATH.exists():
+        mac = (
+            pd.read_csv(MACRO_CSV_PATH, parse_dates=["date"])
+            .rename(columns={"BZ=F": "brent", "USDRUB=X": "usd_rub"})
+            .set_index("date")
+        )
+        # Собираем НОВЫЙ фрейм: присваивание серии с расширенным индексом
+        # обратно в mac выровнялось бы по индексу и потеряло бы добавленные даты.
+        filled = {
+            col: _fill_daily_gap(mac[col])
+            for col in ("brent", "usd_rub")
+            if col in mac.columns
+        }
+        out = _merge_keep_keys(out, pd.DataFrame(filled).reset_index(), ["date"])
+    else:
+        logging.getLogger(__name__).warning(
+            "Файл %s не найден: признаки нефти и курса будут пустыми. "
+            "Запусти `python -m src.external.extra_data`.",
+            MACRO_CSV_PATH,
+        )
+        out = out.assign(brent=np.nan, usd_rub=np.nan)
+
+    return out
+
+
+def _add_heating_degree_days(df: pd.DataFrame) -> pd.DataFrame:
+    """
+    Отопительные градусо-дни (HDD) из уже имеющейся погоды.
+
+    Сумма max(0, 18 - t) за последние 1/3/7 суток - классический
+    индикатор суровости зимы. Лучше мгновенной температуры объясняет
+    переход «пешком или на машине»: декабрь холоднее октября, и это
+    различие видно не по одному часу, а по накопленной сумме.
+    """
+    if "temperature_2m" not in df.columns:
+        return df
+    # Сортируем для скользящих окон, но обязательно возвращаем исходный
+    # порядок строк: make_features обязан сохранять построчное соответствие.
+    out = df.sort_values(["route", "date", "hour"]).copy()
+    out["_hdd"] = (HDD_BASE_C - out["temperature_2m"].astype(float)).clip(lower=0.0)
+    for window in HDD_WINDOWS:
+        out[f"hdd_{window}h"] = (
+            out.groupby("route")["_hdd"]
+            .transform(lambda s, w=window: s.rolling(w, min_periods=1).mean())
+        )
+    return out.drop(columns=["_hdd"]).reindex(df.index)
+
+
 def _add_extra_features(
     df: pd.DataFrame, cutoff: pd.Timestamp, extra: tuple[str, ...], recent_weeks: int
 ) -> pd.DataFrame:
@@ -500,6 +619,20 @@ def _add_extra_features(
         df = _add_volatility_features(df, cutoff, recent_weeks)
     if "cross_route" in extra:
         df = _add_cross_route_features(df, cutoff, recent_weeks)
+    # Световой день и макро лежат в одном загрузчике: добавляем оба,
+    # затем отбрасываем ненужное, чтобы подгруппы работали независимо.
+    need_daylight = "daylight" in extra or "extra_external" in extra
+    need_macro = "macro" in extra or "extra_external" in extra
+    if need_daylight or need_macro:
+        df = _add_daylight_and_macro(df)
+        if not need_macro:
+            df = df.drop(columns=["brent", "usd_rub"], errors="ignore")
+        if not need_daylight:
+            df = df.drop(
+                columns=["daylight_hours", "darkness_hours"], errors="ignore"
+            )
+    if "hdd" in extra or "extra_external" in extra:
+        df = _add_heating_degree_days(df)
     return df
 
 

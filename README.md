@@ -14,7 +14,9 @@
 | Сильнейший наивный baseline | 0.9040 |
 | Сабмит | `submissions/submission.csv` — 14 640 строк, валидация 24/24 OK |
 
-Модель: LightGBM (`regression_l1`), 31 признак, 1625 деревьев.
+Модель: LightGBM (`regression_l1`), 38 признаков, 1482 дерева.
+Внешние данные: погода Open-Meteo, календарь праздников РФ, световой день,
+нефть Brent и курс USD/RUB (разбор — в `reports/december_analysis.md`).
 
 ## Быстрый старт
 

@@ -25,6 +25,14 @@ python -m pip install -r requirements.txt
 `requests`, `pytest`. Для экспериментов V3 дополнительно `catboost`,
 `xgboost`, `optuna`, `torch`, `statsmodels`, `openpyxl`.
 
+Дополнительные открытые данные (нужны для финальной модели):
+
+```bash
+python -m src.external.extra_data   # световой день (Open-Meteo) + нефть и курс (Yahoo)
+```
+
+Без этих файлов пайплайн работает, но признаки будут пустыми.
+
 Требуется Python 3.10+ (проверено на 3.14, pandas 3.0.3, lightgbm 4.7.0).
 
 
