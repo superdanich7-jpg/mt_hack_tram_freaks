@@ -45,7 +45,23 @@
 запрещает любому признаку выходить за обучающий диапазон более чем на
 20% дней прогноза. Подробности — [`reports/decisions.md`](reports/decisions.md).
 
-## Быстрый старт
+## Запуск решения в Docker (3 модуля)
+
+Система разворачивается единым контуром из трёх компонентов: **ML-ядро**, **FastAPI Backend** и **BI-дашборд**.
+
+```bash
+docker compose up --build
+```
+
+### Доступ к сервисам после запуска:
+- **BI-дашборд (Frontend):** [http://localhost:5173](http://localhost:5173)
+- **REST API & Swagger (Backend):** [http://localhost:8000/docs](http://localhost:8000/docs)
+  - *Логин:* `admin`
+  - *Пароль:* `hackathon2025`
+
+---
+
+## Быстрый старт (локальный запуск ML-пайплайна)
 
 ```bash
 python -m pip install -r requirements.txt
