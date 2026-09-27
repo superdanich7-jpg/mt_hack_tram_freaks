@@ -1,0 +1,134 @@
+.app-shell {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  min-height: 0;
+  background: var(--bg-app);
+}
+
+.app-body {
+  flex: 1 1 auto;
+  min-height: 0;
+  padding: 14px 20px;
+}
+
+.app-body--split,
+.app-body--charts {
+  display: flex;
+  min-height: 0;
+}
+
+.app-body--map > .map-panel {
+  height: 100%;
+}
+
+.split-group {
+  flex: 1 1 auto;
+  min-height: 0;
+  width: 100%;
+}
+
+.split-panel {
+  display: flex;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.split-panel > * {
+  flex: 1 1 auto;
+  min-height: 0;
+}
+
+/* Разделители сплит-режима */
+.split-separator {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: transparent;
+  transition: background 0.15s;
+}
+
+.split-separator--vertical {
+  width: 14px;
+  cursor: col-resize;
+}
+
+.split-separator--horizontal {
+  height: 14px;
+  cursor: row-resize;
+}
+
+.split-separator::before {
+  content: '';
+  position: absolute;
+  border-radius: 4px;
+  background: var(--border);
+  transition: background 0.15s;
+}
+
+.split-separator--vertical::before {
+  top: 0;
+  bottom: 0;
+  width: 3px;
+}
+
+.split-separator--horizontal::before {
+  left: 0;
+  right: 0;
+  height: 3px;
+}
+
+.split-separator:hover::before,
+.split-separator[data-separator-overlay='active']::before,
+.split-separator:active::before {
+  background: var(--accent);
+}
+
+.split-separator__grip {
+  position: relative;
+  z-index: 1;
+  border-radius: 2px;
+  background: var(--accent-border);
+}
+
+.split-separator--vertical .split-separator__grip {
+  width: 2px;
+  height: 34px;
+}
+
+.split-separator--horizontal .split-separator__grip {
+  width: 34px;
+  height: 2px;
+}
+
+.app-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 8px 20px;
+  font-size: 11.5px;
+  color: var(--text-dim);
+  border-top: 1px solid var(--border);
+  background: var(--bg-panel);
+}
+
+.app-footer code,
+.app-footer span code {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
+.app-footer__hint {
+  color: var(--text-muted);
+}
+
+@media (max-width: 900px) {
+  .app-body {
+    padding: 10px 12px;
+  }
+}

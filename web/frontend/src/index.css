@@ -1,0 +1,105 @@
+/* Тёмная тема дашборда: строгая фиолетово-синяя гамма.
+   Фон #1a1230, интерактив #406fd2, светлый акцент #f5f8fd. */
+:root {
+  color-scheme: dark;
+
+  /* Фоны: базовый + приглушённые осветлённые оттенки того же тона */
+  --bg-app: #1a1230; /* RGB(26, 18, 48) */
+  --bg-panel: #221839;
+  --bg-elevated: #2a1f47;
+  --bg-input: #1f1638;
+  --bg-hover: #312456;
+
+  --border: #362a5c;
+  --border-soft: rgba(151, 140, 205, 0.16);
+
+  --text: #f5f8fd; /* RGB(245, 248, 253) */
+  --text-muted: #a9b1d6;
+  --text-dim: #7d84ab;
+
+  /* Интерактив */
+  --accent: #406fd2; /* RGB(64, 111, 210) */
+  --accent-hover: #5583e0;
+  --accent-soft: rgba(64, 111, 210, 0.16);
+  --accent-border: rgba(64, 111, 210, 0.45);
+  --accent-2: #f5f8fd;
+  --accent-2-soft: rgba(245, 248, 253, 0.12);
+
+  /* Семантика изменения потока (в той же гамме) */
+  --rise: #a08bf0;
+  --fall: #7f9ae8;
+
+  --radius-lg: 16px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+
+  --shadow: 0 18px 40px -24px rgba(8, 4, 20, 0.95);
+
+  --sans: system-ui, 'Segoe UI', Roboto, sans-serif;
+  --mono: ui-monospace, Consolas, monospace;
+
+  font: 15px/140% var(--sans);
+  color: var(--text);
+  background: var(--bg-app);
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+}
+
+body {
+  background: var(--bg-app);
+  color: var(--text);
+  overflow: hidden;
+}
+
+h1,
+h2,
+h3 {
+  margin: 0;
+  font-weight: 600;
+  letter-spacing: -0.2px;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  cursor: pointer;
+}
+
+/* Скроллбары в тёмной теме */
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background: #3b2f63;
+  border-radius: 8px;
+  border: 2px solid var(--bg-panel);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: #4a3c7d;
+}
+
+/* Фокус-стили в акцентном цвете */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}

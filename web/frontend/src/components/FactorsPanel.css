@@ -1,0 +1,241 @@
+.factors-panel {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-wrap: nowrap;
+  overflow-x: auto;
+  overflow-y: hidden;
+  white-space: nowrap;
+  padding: 8px 18px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  z-index: 350;
+  scrollbar-width: thin;
+}
+
+.factors-panel > * {
+  flex-shrink: 0;
+}
+
+.factors-panel__title {
+  min-width: 145px;
+}
+
+.factors-panel__title h2 {
+  font-size: 13px;
+  color: var(--text);
+  line-height: 1.2;
+}
+
+.factors-panel__title p {
+  margin-top: 1px;
+  font-size: 11px;
+  color: var(--text-dim);
+  line-height: 1.2;
+}
+
+/* Переключатель «Выходной / праздничный день» */
+.switch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.switch__input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.switch__track {
+  position: relative;
+  flex: 0 0 auto;
+  width: 38px;
+  height: 21px;
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-input);
+  transition: background 0.18s, border-color 0.18s;
+}
+
+.switch__thumb {
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  background: var(--text-dim);
+  transition: transform 0.18s, background 0.18s;
+}
+
+.switch__text {
+  font-size: 12.5px;
+  color: var(--text-muted);
+  transition: color 0.18s;
+}
+
+.switch__input:checked + .switch__track {
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.switch__input:checked + .switch__track .switch__thumb {
+  transform: translateX(17px);
+  background: var(--accent-2);
+}
+
+.switch__input:checked ~ .switch__text {
+  color: var(--text);
+}
+
+.switch__input:focus-visible + .switch__track {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 2px;
+}
+
+/* Селекторы погоды и событий */
+.factor-field {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.factor-field__label {
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+  line-height: 1.1;
+}
+
+.factor-field__label b {
+  color: var(--accent-2);
+}
+
+.factor-field__control {
+  position: relative;
+  display: block;
+}
+
+.factor-field__control::after {
+  content: '';
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  margin-top: -2px;
+  border: 4px solid transparent;
+  border-top-color: var(--text-muted);
+  pointer-events: none;
+}
+
+.factor-field select {
+  width: 100%;
+  padding: 6px 26px 6px 9px;
+  font: inherit;
+  font-size: 12.5px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.factor-field select:hover {
+  border-color: var(--accent-border);
+}
+
+.factor-field select:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.factor-field select option {
+  color: var(--text);
+  background: #221839;
+}
+
+/* Ползунок «Уровень пробок» */
+.factor-field--slider {
+  min-width: 160px;
+}
+
+.factor-field--slider input[type='range'] {
+  width: 100%;
+  height: 4px;
+  margin: 5px 0 2px;
+  border-radius: 4px;
+  background: linear-gradient(90deg, var(--accent) 0%, var(--bg-hover) 100%);
+  appearance: none;
+  cursor: pointer;
+}
+
+.factor-field--slider input[type='range']::-webkit-slider-thumb {
+  width: 14px;
+  height: 14px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background: var(--accent-2);
+  appearance: none;
+}
+
+.factor-field--slider input[type='range']::-moz-range-thumb {
+  width: 10px;
+  height: 10px;
+  border: 3px solid var(--accent);
+  border-radius: 50%;
+  background: var(--accent-2);
+}
+
+.factor-field--slider input[type='range']:focus-visible {
+  outline: 2px solid var(--accent-2);
+  outline-offset: 4px;
+}
+
+/* Чипы с применёнными коэффициентами */
+.factors-panel__chips {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  flex-wrap: nowrap;
+  margin-left: auto;
+}
+
+.factor-chip {
+  padding: 4px 9px;
+  font-size: 11px;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  white-space: nowrap;
+}
+
+.factor-chip--accent {
+  color: var(--accent-2);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.factors-panel__reset {
+  padding: 4px 10px;
+  font-size: 11px;
+  color: var(--accent-2);
+  border: 1px solid var(--accent-2-soft);
+  border-radius: 20px;
+  background: var(--accent-2-soft);
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+}
+
+.factors-panel__reset:hover {
+  color: #1a1230;
+  background: var(--accent-2);
+}

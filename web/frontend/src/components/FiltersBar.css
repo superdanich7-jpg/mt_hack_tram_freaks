@@ -1,0 +1,122 @@
+.filters-bar {
+  display: flex;
+  align-items: flex-end;
+  gap: 14px;
+  flex-wrap: wrap;
+  padding: 12px 20px;
+  border-bottom: 1px solid var(--border);
+  background: var(--bg-panel);
+  z-index: 400;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  min-width: 210px;
+  flex: 1 1 210px;
+}
+
+.filter-field__label {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--text-dim);
+}
+
+.filter-field__control {
+  position: relative;
+  display: block;
+}
+
+.filter-field__control::after {
+  content: '';
+  position: absolute;
+  right: 14px;
+  top: 50%;
+  margin-top: -2px;
+  border: 5px solid transparent;
+  border-top-color: var(--text-muted);
+  pointer-events: none;
+}
+
+.filter-field select {
+  width: 100%;
+  padding: 10px 34px 10px 12px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  appearance: none;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filter-field select:hover {
+  border-color: var(--accent-border);
+}
+
+.filter-field select:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.filter-field select option {
+  color: var(--text);
+  background: #221839;
+}
+
+.filters-bar__meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+  padding-bottom: 2px;
+}
+
+.filter-chip {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 11px;
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  white-space: nowrap;
+  max-width: 260px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.filter-chip--muted {
+  color: var(--text-muted);
+  background: transparent;
+  border-style: dashed;
+}
+
+.filter-chip__dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--accent);
+}
+
+.filters-bar__reset {
+  padding: 6px 11px;
+  font-size: 12px;
+  color: var(--accent-2);
+  border: 1px solid var(--accent-2-soft);
+  border-radius: 20px;
+  background: var(--accent-2-soft);
+  transition: background 0.15s, color 0.15s;
+}
+
+.filters-bar__reset:hover {
+  color: var(--bg-app);
+  background: var(--accent-2);
+}
