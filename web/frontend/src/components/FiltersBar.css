@@ -69,6 +69,39 @@
   background: #221839;
 }
 
+/* Поле даты: стрелка-индикатор нужна только селектам. */
+.filter-field__control--date::after {
+  display: none;
+}
+
+.filter-field input[type='date'] {
+  width: 100%;
+  padding: 10px 12px;
+  font: inherit;
+  font-size: 13.5px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  background: var(--bg-input);
+  color-scheme: dark;
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.filter-field input[type='date']:hover {
+  border-color: var(--accent-border);
+}
+
+.filter-field input[type='date']:focus-visible {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px var(--accent-soft);
+}
+
+.filter-field input[type='date']::-webkit-calendar-picker-indicator {
+  filter: invert(0.75);
+  cursor: pointer;
+}
+
 .filters-bar__meta {
   display: flex;
   align-items: center;
@@ -114,6 +147,87 @@
   border-radius: 20px;
   background: var(--accent-2-soft);
   transition: background 0.15s, color 0.15s;
+}
+
+/* Статус источника данных: бэкенд / расчётный профиль / ошибка запроса. */
+.filter-chip--source {
+  max-width: 340px;
+  font-variant-numeric: tabular-nums;
+}
+
+.filter-chip--ok {
+  color: var(--text);
+  border-color: var(--accent-border);
+  background: var(--accent-soft);
+}
+
+.filter-chip--ok .filter-chip__dot {
+  background: var(--accent);
+}
+
+.filter-chip--loading .filter-chip__dot,
+.filter-chip--ok .filter-chip__dot {
+  animation: chip-pulse 1.2s ease-in-out infinite;
+}
+
+.filter-chip--loading {
+  color: var(--text-muted);
+  border-style: dashed;
+}
+
+.filter-chip--loading .filter-chip__dot {
+  background: var(--text-muted);
+}
+
+.filter-chip--mock {
+  color: var(--text-muted);
+  border-style: dashed;
+}
+
+.filter-chip--mock .filter-chip__dot {
+  background: var(--fall);
+}
+
+.filter-chip--error {
+  color: var(--rise);
+  border-color: var(--rise);
+  background: rgba(160, 139, 240, 0.14);
+}
+
+.filter-chip--error .filter-chip__dot {
+  background: var(--rise);
+}
+
+@keyframes chip-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.35;
+  }
+}
+
+.filters-bar__reload {
+  padding: 6px 11px;
+  font-size: 12px;
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  background: var(--bg-elevated);
+  transition: background 0.15s, border-color 0.15s, color 0.15s;
+}
+
+.filters-bar__reload:hover:not(:disabled) {
+  color: var(--bg-app);
+  border-color: var(--accent);
+  background: var(--accent);
+}
+
+.filters-bar__reload:disabled {
+  color: var(--text-dim);
+  cursor: default;
 }
 
 .filters-bar__reset:hover {

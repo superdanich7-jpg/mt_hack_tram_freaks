@@ -2,6 +2,7 @@ import { useCallback, useMemo, useState } from 'react'
 import { Group, Panel, Separator } from 'react-resizable-panels'
 import { ALL_STOPS_VALUE, ROUTES, getStop, getStopsForRoute } from '../data/routes'
 import { INITIAL_FACTORS, INITIAL_FILTERS, useDashboardData } from '../hooks/useDashboardData'
+import { API_BASE_URL } from '../lib/api'
 import { buildForecastCsv, buildForecastFileName, downloadCsv } from '../lib/csv'
 import { formatNumber1 } from '../lib/format'
 import type { ExternalFactors, FiltersState, LayoutMode, MapFocusRequest } from '../types'
@@ -19,10 +20,36 @@ export default function Dashboard() {
   const [layoutMode, setLayoutMode] = useState<LayoutMode>('split')
   const [focusNonce, setFocusNonce] = useState(0)
 
-  const availableStops = useMemo(() => getStopsForRoute(filters.routeId), [filters.routeId])
-  const { dataset, ranking, generatedAt } = useDashboardData(filters, factors)
+  const {
+    dataset,
+    ranking,
+    generatedAt,
+    routeId,
+    stopId,
+    date,
+    routeIds,
+    routesError,
+    source,
+    isLoading,
+    error: forecastError,
+    reload,
+  } = useDashboardData(filters, factors)
 
-  const selectedStop = filters.stopId === ALL_STOPS_VALUE ? undefined : getStop(filters.stopId)
+  /** Маршруты фильтра: только те, по которым бэкенд отдал прогноз (иначе — локальный справочник). */
+  const availableRoutes = useMemo(
+    () => ROUTES.filter((route) => routeIds.includes(route.id)),
+    [routeIds],
+  )
+
+  const availableStops = useMemo(() => getStopsForRoute(routeId), [routeId])
+
+  /** Подпись источника данных для шапки и панели фильтров. */
+  const sourceLabel =
+    source === 'backend'
+      ? `бэкенд ${API_BASE_URL} · прогноз на ${date}`
+      : `расчётный профиль · запрос на ${date}`
+
+  const selectedStop = stopId === ALL_STOPS_VALUE ? undefined : getStop(stopId)
 
   /** Запрос центрирования карты: обновляется только при выборе остановки в фильтре или рейтинге. */
   const focus = useMemo<MapFocusRequest | null>(() => {
@@ -75,8 +102,8 @@ export default function Dashboard() {
     <MapPanel
       visibleStops={availableStops}
       ranking={ranking}
-      activeRouteId={filters.routeId}
-      selectedStopId={filters.stopId}
+      activeRouteId={routeId}
+      selectedStopId={stopId}
       focus={focus}
       onSelectStop={handleSelectStop}
     />
@@ -88,7 +115,7 @@ export default function Dashboard() {
     <StatsPanel
       dataset={dataset}
       ranking={ranking}
-      selectedStopId={filters.stopId}
+      selectedStopId={stopId}
       onSelectStop={handleSelectStop}
     />
   )
@@ -116,15 +143,20 @@ export default function Dashboard() {
         exportDisabled={dataset.points.length === 0}
         exportRowCount={dataset.points.length}
         generatedAt={generatedAt}
+        dataSourceLabel={sourceLabel}
       />
 
       <FiltersBar
-        filters={filters}
-        routes={ROUTES}
+        filters={{ ...filters, routeId, stopId }}
+        routes={availableRoutes}
         availableStops={availableStops}
         selectedStop={selectedStop}
         pointsCount={dataset.points.length}
         accuracy={dataset.summary.accuracy}
+        dataSource={source}
+        isLoading={isLoading}
+        error={forecastError || routesError}
+        onReload={reload}
         onChange={handleFiltersChange}
         onReset={handleReset}
       />
@@ -160,8 +192,22 @@ export default function Dashboard() {
 
       <footer className="app-footer">
         <span>
-          Мок-данные: детерминированный генератор <code>src/data/forecast.ts</code> · бэкенд
-          подключается заменой <code>buildForecast()</code>
+          {source === 'backend' ? (
+            <>
+              Данные бэкенда{' '}
+              <code>
+                {API_BASE_URL}/forecast?route={routeId}&amp;date={date}
+              </code>
+              {isLoading ? ' · обновление…' : ''}
+            </>
+          ) : (
+            <>
+              Бэкенд недоступен — расчётный профиль <code>src/data/forecast.ts</code>
+              {isLoading ? ' · запрос к бэкенду…' : ''}
+            </>
+          )}
+          {forecastError ? ` · ${forecastError}` : ''}
+          {routesError ? ` · /routes: ${routesError}` : ''}
         </span>
         <span className="app-footer__hint">
           {dataset.meta.scopeLabel} · {dataset.meta.intervalLabel} · {dataset.meta.horizonLabel} ·

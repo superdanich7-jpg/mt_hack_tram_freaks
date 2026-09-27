@@ -1,42 +1,82 @@
+/*
+ * Каркас дашборда: min-h-screen + flex-shrink-0 + overflow-y-auto.
+ * .app-shell занимает ровно высоту экрана (100dvh), верхние панели и футер
+ * не сжимаются (flex-shrink: 0), а всю оставшуюся высоту заполняет .app-body
+ * с внутренним вертикальным скроллом — карточки больше никто не сплющивает.
+ */
 .app-shell {
   display: flex;
   flex-direction: column;
-  height: 100%;
-  min-height: 0;
+  min-height: 100vh;
+  min-height: 100dvh;
+  height: 100vh;
+  height: 100dvh;
   background: var(--bg-app);
 }
 
+/* Шапка, фильтры, факторы и футер — несжимаемые полосы (flex-shrink: 0) */
+.app-shell > * {
+  flex-shrink: 0;
+}
+
+/*
+ * main = область прокрутки дашборда (overflow-y: auto).
+ * min-height: 0 обязательно: без него flex-элемент не отдаёт высоту скроллу
+ * и содержимое сжимается вместо прокрутки.
+ */
 .app-body {
-  flex: 1 1 auto;
-  min-height: 0;
-  padding: 14px 20px;
-}
-
-.app-body--split,
-.app-body--charts {
   display: flex;
-  min-height: 0;
-}
-
-.app-body--map > .map-panel {
-  height: 100%;
-}
-
-.split-group {
+  flex-direction: column;
   flex: 1 1 auto;
   min-height: 0;
+  min-width: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  overscroll-behavior: contain;
+  scrollbar-gutter: stable;
+  padding: 14px 20px 18px;
+}
+
+/* Блоки дашборда идут естественной высотой и уходят в прокрутку, а не сжимаются */
+.app-body > * {
+  flex-shrink: 0;
+}
+
+/*
+ * react-resizable-panels навешивает на группу inline `height: 100%;
+ * overflow: hidden`, а на панели — `flex-basis: N%`. Именно из-за этого
+ * карточки сплющивались до высоты окна. Переопределяем inline-стили:
+ * группа считается по содержимому, скроллится страница.
+ */
+.split-group {
   width: 100%;
+  height: auto !important;
+  min-height: 0;
+  overflow: visible !important;
+}
+
+/* Горизонтальный сплит «карта | графики»: колонки не растягиваем по самой высокой */
+.app-body--split > .split-group {
+  align-items: flex-start;
+}
+
+/* Вертикальный стек «график + топ остановок»: только естественная высота */
+.split-panel > .split-group > [data-panel],
+.app-body--charts > .split-group > [data-panel] {
+  flex: 0 0 auto !important;
+  height: auto !important;
+  min-height: 0 !important;
+  overflow: visible !important;
 }
 
 .split-panel {
   display: flex;
   min-width: 0;
-  min-height: 0;
-  overflow: hidden;
 }
 
 .split-panel > * {
   flex: 1 1 auto;
+  min-width: 0;
   min-height: 0;
 }
 
@@ -103,7 +143,19 @@
   height: 2px;
 }
 
+/* Горизонтальный разделитель больше не двигает границы — остаётся тонкой линией-отступом */
+.split-separator--horizontal {
+  cursor: default;
+}
+
+.split-separator--horizontal .split-separator__grip {
+  display: none;
+}
+
 .app-footer {
+  position: sticky;
+  bottom: 0;
+  z-index: 700;
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -127,8 +179,47 @@
   color: var(--text-muted);
 }
 
+/* Узкий экран: колонки «карта / графики» складываем в одну колонку, скролл тот же */
+@media (max-width: 1100px) {
+  .app-body--split > .split-group {
+    flex-direction: column !important;
+    align-items: stretch;
+  }
+
+  .app-body--split > .split-group > [data-panel] {
+    flex: 0 0 auto !important;
+    width: 100% !important;
+    min-height: 0 !important;
+  }
+
+  /* Разделитель-перехват на узком экране не за что тягать */
+  .app-body--split > .split-group > [data-separator] {
+    display: none;
+  }
+}
+
 @media (max-width: 900px) {
   .app-body {
     padding: 10px 12px;
+  }
+
+  .app-footer {
+    padding: 8px 12px;
+  }
+}
+
+/*
+ * Очень низкое окно: верхние панели съедают почти весь экран, поэтому
+ * возвращаем прокрутку на страницу (body), чтобы карта не исчезала.
+ */
+@media (max-height: 640px) {
+  .app-shell {
+    height: auto;
+    min-height: 100dvh;
+  }
+
+  .app-body {
+    overflow-y: visible;
+    min-height: 380px;
   }
 }

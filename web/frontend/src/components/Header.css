@@ -8,7 +8,10 @@
   border-bottom: 1px solid var(--border);
   background: linear-gradient(180deg, #241a3d 0%, var(--bg-panel) 100%);
   box-shadow: var(--shadow);
-  z-index: 500;
+  /* Липкая шапка: при вертикальном скролле страницы остаётся сверху */
+  position: sticky;
+  top: 0;
+  z-index: 800;
 }
 
 .app-header__brand {

@@ -1,6 +1,7 @@
 import { ALL_STOPS_VALUE } from '../data/routes'
 import { HORIZONS, TIME_INTERVALS } from '../data/forecast'
-import type { FiltersState, HorizonId, IntervalId, TramStop } from '../types'
+import { MAX_FORECAST_DATE, MIN_FORECAST_DATE } from '../lib/api'
+import type { FiltersState, ForecastSource, HorizonId, IntervalId, TramStop } from '../types'
 import { formatPercent } from '../lib/format'
 import './FiltersBar.css'
 
@@ -11,6 +12,12 @@ interface FiltersBarProps {
   selectedStop?: TramStop
   pointsCount: number
   accuracy: number
+  /** Источник текущего набора данных: бэкенд или расчётный профиль. */
+  dataSource: ForecastSource
+  isLoading: boolean
+  /** Ошибка последнего запроса к бэкенду ('' — ошибок нет). */
+  error: string
+  onReload: () => void
   onChange: (patch: Partial<FiltersState>) => void
   onReset: () => void
 }
@@ -22,9 +29,22 @@ export default function FiltersBar({
   selectedStop,
   pointsCount,
   accuracy,
+  dataSource,
+  isLoading,
+  error,
+  onReload,
   onChange,
   onReset,
 }: FiltersBarProps) {
+  const statusTone = error ? 'error' : isLoading ? 'loading' : dataSource === 'backend' ? 'ok' : 'mock'
+  const statusText = error
+    ? error
+    : isLoading
+      ? 'Запрос к бэкенду…'
+      : dataSource === 'backend'
+        ? `Бэкенд · прогноз на ${filters.date}`
+        : 'Расчётный профиль (бэкенд недоступен)'
+
   return (
     <section className="filters-bar" aria-label="Фильтры прогноза">
       <label className="filter-field">
@@ -41,6 +61,22 @@ export default function FiltersBar({
               </option>
             ))}
           </select>
+        </span>
+      </label>
+
+      <label className="filter-field">
+        <span className="filter-field__label">Дата прогноза</span>
+        <span className="filter-field__control filter-field__control--date">
+          <input
+            type="date"
+            value={filters.date}
+            min={MIN_FORECAST_DATE}
+            max={MAX_FORECAST_DATE}
+            onChange={(event) => {
+              if (!event.target.value) return
+              onChange({ date: event.target.value })
+            }}
+          />
         </span>
       </label>
 
@@ -102,6 +138,16 @@ export default function FiltersBar({
         </span>
         <span className="filter-chip filter-chip--muted">{pointsCount} точки/точек</span>
         <span className="filter-chip filter-chip--muted">Точность: {formatPercent(accuracy)}</span>
+        <span
+          className={`filter-chip filter-chip--source filter-chip--${statusTone}`}
+          title={statusText}
+        >
+          <span className="filter-chip__dot" aria-hidden="true" />
+          {statusText}
+        </span>
+        <button type="button" className="filters-bar__reload" onClick={onReload} disabled={isLoading}>
+          Обновить
+        </button>
         <button type="button" className="filters-bar__reset" onClick={onReset}>
           Сбросить фильтры
         </button>

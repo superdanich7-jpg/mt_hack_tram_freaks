@@ -1,6 +1,6 @@
 /**
  * Общие типы дашборда прогноза пассажиропотока трамваев Москвы.
- * Бэкенда пока нет — все структуры описывают мок-данные.
+ * Структуры описывают как реальный прогноз FastAPI-бэкенда, так и расчётный профиль-фолбэк.
  */
 
 export interface LatLng {
@@ -189,7 +189,12 @@ export interface FiltersState {
   stopId: StopFilterValue
   intervalId: IntervalId
   horizonId: HorizonId
+  /** Дата прогноза `YYYY-MM-DD` — уходит в параметр `date` запроса /forecast. */
+  date: string
 }
+
+/** Источник данных дашборда: реальный бэкенд или детерминированный мок-генератор. */
+export type ForecastSource = 'backend' | 'mock'
 
 /** Значение фильтра «остановка» = конкретная остановка или все видимые. */
 export type StopFilterValue = 'all' | string

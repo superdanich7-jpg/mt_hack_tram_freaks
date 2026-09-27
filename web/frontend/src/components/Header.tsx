@@ -9,6 +9,8 @@ interface HeaderProps {
   exportDisabled: boolean
   exportRowCount: number
   generatedAt: string
+  /** Что является источником данных: бэкенд или расчётный профиль. */
+  dataSourceLabel: string
 }
 
 const LAYOUT_OPTIONS: { id: LayoutMode; label: string }[] = [
@@ -50,6 +52,7 @@ export default function Header({
   exportDisabled,
   exportRowCount,
   generatedAt,
+  dataSourceLabel,
 }: HeaderProps) {
   return (
     <header className="app-header">
@@ -63,7 +66,7 @@ export default function Header({
         <div>
           <h1 className="app-header__title">Прогноз пассажиропотока трамваев Москвы</h1>
           <p className="app-header__subtitle">
-            Демо-данные (мок-API) · обновлено {formatDateTime(generatedAt)}
+            Данные: {dataSourceLabel} · обновлено {formatDateTime(generatedAt)}
           </p>
         </div>
       </div>
@@ -90,7 +93,7 @@ export default function Header({
           className="export-button"
           onClick={onExport}
           disabled={exportDisabled}
-          title="Скачать текущие отображаемые мок-данные в CSV"
+          title="Скачать текущие отображаемые данные в CSV"
         >
           <svg viewBox="0 0 16 16" width="15" height="15" aria-hidden="true">
             <path

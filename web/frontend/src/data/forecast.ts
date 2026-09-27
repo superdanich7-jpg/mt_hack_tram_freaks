@@ -15,6 +15,8 @@ import type {
   WeatherOption,
 } from '../types'
 import { ALL_ROUTES_VALUE, ALL_STOPS_VALUE, formatRouteLabel, getStop, getStopsForRoute } from './routes'
+import type { ForecastRecord } from '../lib/api'
+
 
 /**
  * Относительный профиль пассажиропотока трамвая по часам суток (мок-модель).
@@ -64,6 +66,12 @@ export const HOLIDAY_VOLUME_FACTOR = 0.62
 
 /** Максимальная доля сглаживания пиков при уровне пробок 10. */
 const MAX_TRAFFIC_SMOOTHING = 0.45
+
+/**
+ * Запас провозной способности к пиковому часу базового спроса:
+ * подвижной состав подбирается под пик с 15 % резерва.
+ */
+const CAPACITY_HEADROOM = 1.15
 
 /** Значения по умолчанию: будний день, ясно, штатно, невысокие пробки. */
 export const DEFAULT_EXTERNAL_FACTORS: ExternalFactors = {
@@ -197,26 +205,100 @@ interface StopSeries {
   capacityPerHour: number
 }
 
-/** Строит суточный ряд для одной остановки: базовый профиль + прогноз с факторами. */
+/**
+ * Прогнозы бэкенда по маршрутам: ключ — id маршрута, значение — 24 часовых прогноза.
+ * Нужны, чтобы при фильтре «Все маршруты» остановка получала ряд своего маршрута,
+ * а не среднее по всей сети.
+ */
+export type RoutePredictions = Record<string, number[]>
+
+/**
+ * Базовый суточный ряд остановки из реального прогноза бэкенда.
+ * Прогноз отдаётся по маршруту целиком, поэтому на остановку приходится доля 1/N его остановок.
+ * Возвращает null, если реальных данных нет — тогда работает расчётный профиль.
+ */
+function stopBaseHoursFromBackend(
+  stop: TramStop,
+  routeId: string,
+  realHourlyPredictions?: number[],
+  realRoutePredictions?: RoutePredictions,
+): number[] | null {
+  const ownRouteId = realRoutePredictions
+    ? stop.routeIds.find((id) => realRoutePredictions[id]?.length === 24)
+    : undefined
+  const series = ownRouteId ? realRoutePredictions?.[ownRouteId] : realHourlyPredictions
+  if (!series || series.length !== 24) return null
+  const stops = getStopsForRoute(ownRouteId ?? routeId)
+  const stopRatio = stops.length > 0 ? 1 / stops.length : 1
+  return series.map((value) => value * stopRatio)
+}
+
+/**
+ * Преобразует массив ForecastRecord из FastAPI эндпоинта /forecast в массив из 24 чисел по часам 0..23.
+ */
+export function recordsToHourlyArray(records: ForecastRecord[]): number[] {
+  const hours = new Array<number>(24).fill(0)
+  for (const record of records) {
+    if (!record.datetime) continue
+    const dt = new Date(record.datetime)
+    const h = isNaN(dt.getHours()) ? parseInt(record.datetime.slice(11, 13), 10) : dt.getHours()
+    if (h >= 0 && h < 24) {
+      hours[h] = record.passengers
+    }
+  }
+  return hours
+}
+
+/**
+ * Провозная способность остановки, пасс./час: подвижной состав рассчитан на пиковый час
+ * базового (без внешних факторов) спроса с запасом CAPACITY_HEADROOM.
+ * Так заполняемость сопоставима и для реального прогноза бэкенда, и для расчётного профиля.
+ */
+function capacityFromBase(baseHours: number[]): number {
+  const peak = baseHours.length > 0 ? Math.max(...baseHours) : 0
+  return Math.max(1, Math.round(peak * CAPACITY_HEADROOM))
+}
+
+/** Строит суточный ряд для одной остановки: реальный прогноз бэкенда или расчётный профиль. */
 function buildStopSeries(
   stop: TramStop,
   routeId: string,
   horizon: Horizon,
   factors: ExternalFactors,
+  realHourlyPredictions?: number[],
+  realRoutePredictions?: RoutePredictions,
 ): StopSeries {
+  const backendHours = stopBaseHoursFromBackend(
+    stop,
+    routeId,
+    realHourlyPredictions,
+    realRoutePredictions,
+  )
+  if (backendHours) {
+    return {
+      stop,
+      baseHours: backendHours,
+      forecastHours: applyExternalFactors(backendHours, factors),
+      capacityPerHour: capacityFromBase(backendHours),
+    }
+  }
+
+  const share = routeShare(stop, routeId)
   const random = mulberry32(hashString(`${stop.id}|${routeId}|${horizon.id}`))
   const character = 0.9 + random() * 0.25
-  const share = routeShare(stop, routeId)
   const dailyVolume = stop.dailyBase * share * (1 + horizon.growth)
-  const capacityPerHour = Math.round((stop.dailyBase / 24) * 1.9 * share + 400)
   const baseHours = HOUR_WEIGHTS.map((weight, hour) => {
     const base = (dailyVolume * weight) / WEIGHT_SUM
     const hourlyNoise = 0.88 + random() * 0.24
     const rushBoost = hour === 8 || hour === 18 ? 1.04 : 1
     return Math.max(0, base * character * hourlyNoise * rushBoost)
   })
-  const forecastHours = applyExternalFactors(baseHours, factors)
-  return { stop, baseHours, forecastHours, capacityPerHour }
+  return {
+    stop,
+    baseHours,
+    forecastHours: applyExternalFactors(baseHours, factors),
+    capacityPerHour: capacityFromBase(baseHours),
+  }
 }
 
 /** Приводит ряд к HourlyPoint (факт прошлого периода + доверительный интервал + заполняемость). */
@@ -232,13 +314,14 @@ function toPoint(params: {
   return {
     hour,
     label: `${String(hour).padStart(2, '0')}:00`,
-    actual,
-    forecast,
-    low: forecast * (1 - bandWidth),
-    high: forecast * (1 + bandWidth),
+    actual: Math.round(actual),
+    forecast: Math.round(forecast),
+    low: Math.max(0, Math.round(forecast * (1 - bandWidth))),
+    high: Math.round(forecast * (1 + bandWidth)),
     load,
   }
 }
+
 
 
 interface ForecastScope {
@@ -248,17 +331,39 @@ interface ForecastScope {
   capacityPerHour: number
 }
 
-/** Готовит суммарный ряд по выбранным остановкам (учитывает фильтры и внешние факторы). */
+/** Округляет суточный ряд до целых пассажиров: суммы KPI совпадают с точками графика. */
+function roundSeries(hours: number[]): number[] {
+  return hours.map((value) => Math.round(value))
+}
+
+/** Готовит суммарный ряд по выбранным остановкам (учитывает фильтры, внешние факторы и реальные предсказания). */
 function buildScope(
   routeId: string,
   stopId: string,
   horizon: Horizon,
   factors: ExternalFactors,
+  realHourlyPredictions?: number[],
+  realRoutePredictions?: RoutePredictions,
 ): ForecastScope {
   const stopsInRoute = getStopsForRoute(routeId)
   const selectedStop = stopId === ALL_STOPS_VALUE ? undefined : getStop(stopId)
   const stops = selectedStop ? [selectedStop] : stopsInRoute
-  const series = stops.map((stop) => buildStopSeries(stop, routeId, horizon, factors))
+
+  // Весь маршрут / вся сеть + реальный прогноз бэкенда: агрегат уже посчитан по маршруту,
+  // поэтому делить его по остановкам не нужно.
+  if (!selectedStop && realHourlyPredictions && realHourlyPredictions.length === 24) {
+    const previousFactor = 1 / (1 + horizon.growth)
+    return {
+      stops,
+      forecastHours: roundSeries(applyExternalFactors(realHourlyPredictions, factors)),
+      actualHours: roundSeries(realHourlyPredictions.map((val) => val * previousFactor)),
+      capacityPerHour: capacityFromBase(realHourlyPredictions),
+    }
+  }
+
+  const series = stops.map((stop) =>
+    buildStopSeries(stop, routeId, horizon, factors, realHourlyPredictions, realRoutePredictions),
+  )
   const actualRandom = mulberry32(hashString(`${routeId}|${stopId}|actual|${horizon.id}`))
   const baseHours = new Array<number>(24).fill(0)
   const forecastHours = new Array<number>(24).fill(0)
@@ -282,8 +387,14 @@ function buildScope(
     actualHours[hour] = value * previousFactor * noise
   })
 
-  return { stops, forecastHours, actualHours, capacityPerHour }
+  return {
+    stops,
+    forecastHours: roundSeries(forecastHours),
+    actualHours: roundSeries(actualHours),
+    capacityPerHour,
+  }
 }
+
 
 export interface BuildForecastParams {
   routeId: string
@@ -292,16 +403,29 @@ export interface BuildForecastParams {
   horizonId: HorizonId
   /** Корректирующие коэффициенты панели «Внешние факторы». */
   factors: ExternalFactors
-  /** ISO-время формирования набора мок-данных. */
+  /** ISO-время формирования набора данных. */
   generatedAt: string
+  /** Реальный прогноз по часам 0..23 из FastAPI `/forecast` для выбранного маршрута (или агрегат по сети). */
+  realHourlyPredictions?: number[]
+  /** Прогнозы бэкенда по маршрутам: нужны, чтобы раскладывать агрегат по остановкам. */
+  realRoutePredictions?: RoutePredictions
 }
 
-/** Собирает набор мок-данных для графика, KPI и экспорта: точка = час суток. */
+/** Собирает набор данных для графика, KPI и экспорта: точка = час суток. */
 export function buildForecast(params: BuildForecastParams): ForecastDataset {
-  const { routeId, stopId, intervalId, horizonId, factors, generatedAt } = params
+  const {
+    routeId,
+    stopId,
+    intervalId,
+    horizonId,
+    factors,
+    generatedAt,
+    realHourlyPredictions,
+    realRoutePredictions,
+  } = params
   const horizon = getHorizon(horizonId)
   const interval = getTimeInterval(intervalId)
-  const scope = buildScope(routeId, stopId, horizon, factors)
+  const scope = buildScope(routeId, stopId, horizon, factors, realHourlyPredictions, realRoutePredictions)
 
   const points = interval.hours.map((hour) =>
     toPoint({
@@ -354,11 +478,11 @@ export function buildForecast(params: BuildForecastParams): ForecastDataset {
       dayTotal,
       peak:
         intervalPeakIndex.value >= 0
-          ? { label: `${String(intervalPeakIndex.hour).padStart(2, '0')}:00`, value: intervalPeakIndex.value }
+          ? { label: `${String(intervalPeakIndex.hour).padStart(2, '0')}:00`, value: Math.round(intervalPeakIndex.value) }
           : null,
       dayPeak:
         dayPeakIndex.value >= 0
-          ? { label: `${String(dayPeakIndex.hour).padStart(2, '0')}:00`, value: dayPeakIndex.value }
+          ? { label: `${String(dayPeakIndex.hour).padStart(2, '0')}:00`, value: Math.round(dayPeakIndex.value) }
           : null,
       avgLoad,
       accuracy: horizon.accuracy,
@@ -371,10 +495,12 @@ export function buildStopRanking(
   routeId: string,
   horizonId: HorizonId,
   factors: ExternalFactors,
+  realHourlyPredictions?: number[],
+  realRoutePredictions?: RoutePredictions,
 ): StopRankingRow[] {
   const horizon = getHorizon(horizonId)
   const series = getStopsForRoute(routeId).map((stop) =>
-    buildStopSeries(stop, routeId, horizon, factors),
+    buildStopSeries(stop, routeId, horizon, factors, realHourlyPredictions, realRoutePredictions),
   )
   const total = series.reduce(
     (sum, item) => sum + item.forecastHours.reduce((innerSum, value) => innerSum + value, 0),
@@ -383,9 +509,9 @@ export function buildStopRanking(
 
   return series
     .map((item) => {
-      const dailyForecast = item.forecastHours.reduce((sum, value) => sum + value, 0)
-      const peakValue = Math.max(...item.forecastHours)
-      const peakHour = item.forecastHours.indexOf(peakValue)
+      const dailyForecast = Math.round(item.forecastHours.reduce((sum, value) => sum + value, 0))
+      const peakValue = Math.round(Math.max(...item.forecastHours))
+      const peakHour = item.forecastHours.indexOf(Math.max(...item.forecastHours))
       const loads = item.forecastHours.map((value) =>
         item.capacityPerHour > 0 ? Math.min(120, (value / item.capacityPerHour) * 100) : 0,
       )
@@ -401,3 +527,4 @@ export function buildStopRanking(
     })
     .sort((left, right) => right.dailyForecast - left.dailyForecast)
 }
+
